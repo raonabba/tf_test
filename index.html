@@ -1,0 +1,881 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>글로벌 친구 플랫폼 - 여행지마다 친구가 있는 세상</title>
+<style>
+  :root {
+    --primary: #FF6B35;
+    --secondary: #2C3E50;
+    --accent: #3498DB;
+    --bg: #FAFAFA;
+    --card-bg: #FFFFFF;
+    --text: #2C3E50;
+    --text-light: #7F8C8D;
+    --border: #ECF0F1;
+    --success: #27AE60;
+    --radius: 16px;
+    --shadow: 0 4px 24px rgba(0,0,0,0.08);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif; background: var(--bg); color: var(--text); }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; width: 100%; background: rgba(255,255,255,0.95);
+    backdrop-filter: blur(12px); z-index: 100; border-bottom: 1px solid var(--border);
+    padding: 14px 24px; display: flex; align-items: center; justify-content: space-between;
+  }
+  .nav-logo { font-size: 1.2rem; font-weight: 800; color: var(--primary); display: flex; align-items: center; gap: 8px; }
+  .nav-logo span { color: var(--secondary); }
+  .nav-links { display: flex; gap: 8px; }
+  .nav-links button {
+    padding: 8px 16px; border: none; border-radius: 20px; cursor: pointer;
+    font-size: 0.85rem; font-weight: 600; transition: all 0.2s;
+  }
+  .btn-ghost { background: transparent; color: var(--text-light); }
+  .btn-ghost:hover { background: var(--border); color: var(--text); }
+  .btn-primary { background: var(--primary); color: white; }
+  .btn-primary:hover { background: #e55a2b; transform: translateY(-1px); }
+
+  /* PAGES */
+  .page { display: none; padding-top: 70px; min-height: 100vh; }
+  .page.active { display: block; }
+
+  /* HERO */
+  .hero {
+    background: linear-gradient(135deg, #FF6B35 0%, #FF8C5A 40%, #FFB347 100%);
+    padding: 80px 24px 60px; text-align: center; color: white; position: relative; overflow: hidden;
+  }
+  .hero::before {
+    content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+    background: radial-gradient(circle at 30% 50%, rgba(255,255,255,0.1) 0%, transparent 60%);
+  }
+  .hero-badge {
+    display: inline-block; background: rgba(255,255,255,0.2); padding: 6px 16px;
+    border-radius: 20px; font-size: 0.8rem; font-weight: 600; margin-bottom: 20px;
+    border: 1px solid rgba(255,255,255,0.3);
+  }
+  .hero h1 { font-size: 2.4rem; font-weight: 900; line-height: 1.2; margin-bottom: 16px; }
+  .hero p { font-size: 1.05rem; opacity: 0.9; max-width: 480px; margin: 0 auto 32px; line-height: 1.7; }
+  .hero-cta { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+  .hero-cta button {
+    padding: 14px 28px; border-radius: 30px; border: none; font-size: 1rem;
+    font-weight: 700; cursor: pointer; transition: all 0.2s;
+  }
+  .cta-main { background: white; color: var(--primary); }
+  .cta-main:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.2); }
+  .cta-sub { background: rgba(255,255,255,0.15); color: white; border: 2px solid rgba(255,255,255,0.4) !important; }
+  .hero-stats { display: flex; gap: 40px; justify-content: center; margin-top: 48px; }
+  .stat { text-align: center; }
+  .stat-num { font-size: 2rem; font-weight: 900; }
+  .stat-label { font-size: 0.8rem; opacity: 0.8; margin-top: 4px; }
+
+  /* FEATURES */
+  .section { padding: 60px 24px; max-width: 900px; margin: 0 auto; }
+  .section-title { text-align: center; font-size: 1.6rem; font-weight: 800; margin-bottom: 8px; }
+  .section-sub { text-align: center; color: var(--text-light); margin-bottom: 40px; font-size: 0.95rem; }
+  .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; }
+  .feature-card {
+    background: var(--card-bg); border-radius: var(--radius); padding: 28px 20px;
+    text-align: center; box-shadow: var(--shadow); transition: transform 0.2s;
+  }
+  .feature-card:hover { transform: translateY(-4px); }
+  .feature-icon { font-size: 2.4rem; margin-bottom: 12px; }
+  .feature-card h3 { font-size: 0.95rem; font-weight: 700; margin-bottom: 8px; }
+  .feature-card p { font-size: 0.82rem; color: var(--text-light); line-height: 1.6; }
+
+  /* DESTINATION SEARCH */
+  .search-section { background: white; padding: 40px 24px; border-radius: var(--radius); margin: 0 24px; box-shadow: var(--shadow); }
+  .search-title { font-size: 1.3rem; font-weight: 800; margin-bottom: 6px; }
+  .search-sub { color: var(--text-light); font-size: 0.85rem; margin-bottom: 20px; }
+  .search-bar {
+    display: flex; gap: 10px; margin-bottom: 24px;
+  }
+  .search-bar input {
+    flex: 1; padding: 14px 18px; border: 2px solid var(--border); border-radius: 30px;
+    font-size: 0.9rem; outline: none; transition: border-color 0.2s;
+  }
+  .search-bar input:focus { border-color: var(--primary); }
+  .search-bar button { padding: 14px 24px; background: var(--primary); color: white; border: none; border-radius: 30px; font-weight: 700; cursor: pointer; }
+  .country-chips { display: flex; flex-wrap: wrap; gap: 10px; }
+  .chip {
+    padding: 8px 16px; border-radius: 20px; border: 2px solid var(--border);
+    background: white; cursor: pointer; font-size: 0.85rem; font-weight: 600;
+    transition: all 0.2s; display: flex; align-items: center; gap: 6px;
+  }
+  .chip:hover, .chip.selected { border-color: var(--primary); background: #FFF0EB; color: var(--primary); }
+
+  /* MATCH PAGE */
+  .match-header { background: linear-gradient(135deg, var(--secondary), #34495E); color: white; padding: 40px 24px; text-align: center; }
+  .match-header h2 { font-size: 1.5rem; font-weight: 800; margin-bottom: 8px; }
+  .match-header p { opacity: 0.8; font-size: 0.9rem; }
+  .match-badge { display: inline-flex; align-items: center; gap: 6px; background: rgba(255,255,255,0.15); padding: 6px 14px; border-radius: 20px; font-size: 0.8rem; margin-bottom: 16px; }
+  .friends-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; padding: 30px 24px; max-width: 900px; margin: 0 auto; }
+  .friend-card {
+    background: white; border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow);
+    transition: transform 0.2s; cursor: pointer;
+  }
+  .friend-card:hover { transform: translateY(-4px); }
+  .friend-card-header { height: 100px; position: relative; display: flex; align-items: flex-end; padding: 12px; }
+  .friend-avatar {
+    width: 64px; height: 64px; border-radius: 50%; border: 3px solid white;
+    display: flex; align-items: center; justify-content: center; font-size: 1.8rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  }
+  .verified-badge {
+    position: absolute; bottom: 8px; left: 68px;
+    background: var(--success); color: white; font-size: 0.65rem;
+    font-weight: 700; padding: 2px 8px; border-radius: 10px;
+    display: flex; align-items: center; gap: 3px;
+  }
+  .match-score {
+    position: absolute; top: 12px; right: 12px;
+    background: var(--primary); color: white; font-size: 0.75rem;
+    font-weight: 800; padding: 4px 10px; border-radius: 12px;
+  }
+  .friend-card-body { padding: 16px; }
+  .friend-name { font-size: 1.05rem; font-weight: 800; margin-bottom: 2px; }
+  .friend-location { font-size: 0.8rem; color: var(--text-light); margin-bottom: 10px; display: flex; align-items: center; gap: 4px; }
+  .friend-bio { font-size: 0.82rem; color: var(--text); line-height: 1.5; margin-bottom: 12px; }
+  .friend-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
+  .tag { background: #F0F4FF; color: var(--accent); font-size: 0.73rem; padding: 3px 10px; border-radius: 10px; font-weight: 600; }
+  .friend-card-footer { display: flex; gap: 8px; }
+  .btn-connect { flex: 1; padding: 10px; background: var(--primary); color: white; border: none; border-radius: 10px; font-weight: 700; font-size: 0.85rem; cursor: pointer; transition: all 0.2s; }
+  .btn-connect:hover { background: #e55a2b; }
+  .btn-save { padding: 10px 14px; background: var(--border); color: var(--text); border: none; border-radius: 10px; cursor: pointer; font-size: 1rem; transition: all 0.2s; }
+  .btn-save:hover { background: #FFE0D6; color: var(--primary); }
+
+  /* CHAT PAGE */
+  .chat-layout { display: flex; height: calc(100vh - 70px); }
+  .chat-sidebar { width: 280px; border-right: 1px solid var(--border); background: white; overflow-y: auto; flex-shrink: 0; }
+  .chat-sidebar-header { padding: 20px 16px; border-bottom: 1px solid var(--border); }
+  .chat-sidebar-header h3 { font-size: 1rem; font-weight: 800; }
+  .chat-list-item {
+    display: flex; align-items: center; gap: 12px; padding: 14px 16px;
+    cursor: pointer; transition: background 0.15s; border-bottom: 1px solid var(--border);
+  }
+  .chat-list-item:hover, .chat-list-item.active { background: #FFF5F0; }
+  .chat-list-avatar { width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; flex-shrink: 0; }
+  .chat-list-info { flex: 1; min-width: 0; }
+  .chat-list-name { font-weight: 700; font-size: 0.9rem; }
+  .chat-list-preview { font-size: 0.78rem; color: var(--text-light); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 2px; }
+  .chat-list-meta { text-align: right; }
+  .chat-list-time { font-size: 0.72rem; color: var(--text-light); }
+  .unread-badge { background: var(--primary); color: white; font-size: 0.65rem; font-weight: 700; width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-top: 4px; margin-left: auto; }
+  .online-dot { width: 10px; height: 10px; background: var(--success); border-radius: 50%; border: 2px solid white; position: absolute; bottom: 0; right: 0; }
+  .chat-avatar-wrap { position: relative; }
+
+  /* CHAT WINDOW */
+  .chat-window { flex: 1; display: flex; flex-direction: column; background: var(--bg); }
+  .chat-header { background: white; padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 12px; }
+  .chat-header-avatar { width: 42px; height: 42px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; }
+  .chat-header-info { flex: 1; }
+  .chat-header-name { font-weight: 800; font-size: 0.95rem; }
+  .chat-header-status { font-size: 0.75rem; color: var(--success); display: flex; align-items: center; gap: 4px; }
+  .chat-header-status::before { content: '●'; font-size: 0.5rem; }
+  .translate-toggle { display: flex; align-items: center; gap: 6px; font-size: 0.78rem; color: var(--text-light); background: var(--border); padding: 6px 12px; border-radius: 20px; cursor: pointer; transition: all 0.2s; }
+  .translate-toggle.on { background: #EBF5FF; color: var(--accent); }
+  .translate-toggle input[type=checkbox] { display: none; }
+  .toggle-switch { width: 28px; height: 16px; background: #ccc; border-radius: 8px; position: relative; transition: background 0.2s; }
+  .toggle-switch.on { background: var(--accent); }
+  .toggle-knob { width: 12px; height: 12px; background: white; border-radius: 50%; position: absolute; top: 2px; left: 2px; transition: left 0.2s; box-shadow: 0 1px 3px rgba(0,0,0,0.2); }
+  .toggle-knob.on { left: 14px; }
+
+  .chat-messages { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 16px; }
+  .msg-row { display: flex; gap: 10px; align-items: flex-end; }
+  .msg-row.mine { flex-direction: row-reverse; }
+  .msg-avatar { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1rem; flex-shrink: 0; }
+  .msg-bubble {
+    max-width: 65%; padding: 12px 16px; border-radius: 18px; font-size: 0.88rem;
+    line-height: 1.5; position: relative;
+  }
+  .msg-row.theirs .msg-bubble { background: white; border-bottom-left-radius: 4px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+  .msg-row.mine .msg-bubble { background: var(--primary); color: white; border-bottom-right-radius: 4px; }
+  .msg-translation { font-size: 0.75rem; margin-top: 6px; padding-top: 6px; border-top: 1px solid rgba(0,0,0,0.08); opacity: 0.7; display: flex; align-items: center; gap: 4px; }
+  .msg-row.mine .msg-translation { border-top-color: rgba(255,255,255,0.3); }
+  .msg-time { font-size: 0.68rem; color: var(--text-light); margin-top: 4px; text-align: right; }
+  .msg-row.theirs .msg-time { text-align: left; }
+  .msg-group { display: flex; flex-direction: column; gap: 4px; }
+
+  .chat-input-area { background: white; padding: 16px 20px; border-top: 1px solid var(--border); }
+  .chat-input-row { display: flex; gap: 10px; align-items: flex-end; }
+  .chat-input {
+    flex: 1; padding: 12px 16px; border: 2px solid var(--border); border-radius: 24px;
+    font-size: 0.88rem; outline: none; resize: none; max-height: 100px; transition: border-color 0.2s;
+    font-family: inherit; line-height: 1.5;
+  }
+  .chat-input:focus { border-color: var(--primary); }
+  .send-btn {
+    width: 44px; height: 44px; background: var(--primary); border: none; border-radius: 50%;
+    color: white; font-size: 1.1rem; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+  .send-btn:hover { background: #e55a2b; transform: scale(1.05); }
+  .translate-hint { font-size: 0.73rem; color: var(--accent); margin-bottom: 8px; display: flex; align-items: center; gap: 4px; }
+
+  /* REVIEWS */
+  .reviews-section { background: linear-gradient(135deg, #F8F9FA, #EEF2FF); padding: 60px 24px; }
+  .reviews-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; max-width: 900px; margin: 40px auto 0; }
+  .review-card { background: white; border-radius: var(--radius); padding: 24px; box-shadow: var(--shadow); }
+  .review-flag { font-size: 1.5rem; margin-bottom: 10px; }
+  .review-title { font-weight: 800; font-size: 0.9rem; margin-bottom: 10px; color: var(--secondary); }
+  .review-text { font-size: 0.83rem; color: var(--text-light); line-height: 1.7; }
+  .review-author { display: flex; align-items: center; gap: 8px; margin-top: 14px; }
+  .review-author-avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--border); display: flex; align-items: center; justify-content: center; font-size: 1rem; }
+  .review-author-name { font-size: 0.8rem; font-weight: 700; }
+  .stars { color: #F39C12; font-size: 0.75rem; letter-spacing: 1px; }
+
+  /* MODAL */
+  .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 200; align-items: center; justify-content: center; padding: 20px; }
+  .modal-overlay.open { display: flex; }
+  .modal { background: white; border-radius: 24px; max-width: 420px; width: 100%; overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,0.2); }
+  .modal-header-bg { padding: 40px 24px 80px; position: relative; text-align: center; }
+  .modal-avatar { width: 88px; height: 88px; border-radius: 50%; border: 4px solid white; font-size: 2.8rem; display: flex; align-items: center; justify-content: center; margin: 0 auto; box-shadow: 0 4px 16px rgba(0,0,0,0.15); }
+  .modal-body { padding: 20px 24px 24px; margin-top: -56px; position: relative; }
+  .modal-name { font-size: 1.4rem; font-weight: 900; margin-bottom: 4px; }
+  .modal-location { color: var(--text-light); font-size: 0.85rem; margin-bottom: 16px; display: flex; align-items: center; gap: 4px; justify-content: center; }
+  .modal-stats { display: flex; gap: 16px; justify-content: center; margin-bottom: 20px; }
+  .modal-stat { text-align: center; }
+  .modal-stat-num { font-size: 1.1rem; font-weight: 800; color: var(--primary); }
+  .modal-stat-label { font-size: 0.72rem; color: var(--text-light); }
+  .modal-tags { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; margin-bottom: 20px; }
+  .modal-bio { font-size: 0.85rem; line-height: 1.7; color: var(--text); margin-bottom: 20px; text-align: center; }
+  .modal-actions { display: flex; gap: 10px; }
+  .modal-actions button { flex: 1; padding: 12px; border-radius: 12px; border: none; font-weight: 700; font-size: 0.9rem; cursor: pointer; transition: all 0.2s; }
+  .btn-message { background: var(--primary); color: white; }
+  .btn-message:hover { background: #e55a2b; }
+  .btn-close-modal { background: var(--border); color: var(--text); }
+  .modal-close-x { position: absolute; top: 12px; right: 12px; width: 32px; height: 32px; background: rgba(255,255,255,0.3); border: none; border-radius: 50%; color: white; font-size: 1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+
+  /* TOAST */
+  .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(100px); background: var(--secondary); color: white; padding: 12px 24px; border-radius: 30px; font-size: 0.85rem; font-weight: 600; z-index: 300; transition: transform 0.3s; white-space: nowrap; }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+
+  /* BOTTOM NAV (mobile) */
+  .bottom-nav { display: none; position: fixed; bottom: 0; left: 0; right: 0; background: white; border-top: 1px solid var(--border); padding: 8px 0 12px; z-index: 99; }
+  .bottom-nav-inner { display: flex; justify-content: space-around; }
+  .bottom-nav-item { display: flex; flex-direction: column; align-items: center; gap: 3px; cursor: pointer; padding: 4px 16px; border-radius: 12px; transition: all 0.2s; }
+  .bottom-nav-item.active { color: var(--primary); }
+  .bottom-nav-item:not(.active) { color: var(--text-light); }
+  .bottom-nav-icon { font-size: 1.3rem; }
+  .bottom-nav-label { font-size: 0.65rem; font-weight: 600; }
+
+  @media (max-width: 640px) {
+    .hero h1 { font-size: 1.8rem; }
+    .hero-stats { gap: 24px; }
+    .chat-sidebar { width: 72px; }
+    .chat-list-info, .chat-list-meta { display: none; }
+    .chat-list-item { padding: 10px; justify-content: center; }
+    .bottom-nav { display: block; }
+    .page { padding-bottom: 70px; }
+  }
+
+  /* FLOW STEPS */
+  .flow-section { background: white; padding: 60px 24px; }
+  .flow-steps { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 0; max-width: 800px; margin: 40px auto 0; }
+  .flow-step { text-align: center; flex: 1; min-width: 100px; }
+  .flow-step-icon { width: 56px; height: 56px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; margin: 0 auto 10px; }
+  .flow-step-label { font-size: 0.78rem; font-weight: 700; color: var(--text); }
+  .flow-arrow { font-size: 1.2rem; color: var(--border); padding: 0 4px; flex-shrink: 0; margin-top: -20px; }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">🌍 글로벌<span>친구</span></div>
+  <div class="nav-links">
+    <button class="btn-ghost" onclick="showPage('home')">홈</button>
+    <button class="btn-ghost" onclick="showPage('match')">친구찾기</button>
+    <button class="btn-ghost" onclick="showPage('chat')">채팅</button>
+    <button class="btn-primary" onclick="showToast('🚀 곧 출시 예정입니다!')">시작하기</button>
+  </div>
+</nav>
+
+<!-- HOME PAGE -->
+<div id="page-home" class="page active">
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-badge">🔥 AI 기반 친구 매칭 플랫폼</div>
+    <h1>여행지마다<br>친구가 있는 세상</h1>
+    <p>AI가 당신과 잘 맞는 현지 친구를 찾아드립니다.<br>자동 번역으로 언어 장벽 없이 진짜 로컬 문화를 경험하세요.</p>
+    <div class="hero-cta">
+      <button class="cta-main" onclick="showPage('match')">🎯 친구 찾아보기</button>
+      <button class="cta-sub" onclick="showPage('chat')">💬 채팅 체험하기</button>
+    </div>
+    <div class="hero-stats">
+      <div class="stat"><div class="stat-num">50+</div><div class="stat-label">국가</div></div>
+      <div class="stat"><div class="stat-num">12K+</div><div class="stat-label">현지 친구</div></div>
+      <div class="stat"><div class="stat-num">98%</div><div class="stat-label">매칭 만족도</div></div>
+    </div>
+  </div>
+
+  <!-- FEATURES -->
+  <div class="section">
+    <div class="section-title">왜 글로벌 친구인가요?</div>
+    <div class="section-sub">여행 + 문화 교류 + 언어 학습을 하나의 플랫폼에서</div>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">🔗</div>
+        <h3>블록체인 신원 인증</h3>
+        <p>DID 기반 실명 인증으로 믿을 수 있는 친구만 연결됩니다</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🤖</div>
+        <h3>AI 친구 매칭</h3>
+        <p>관심사, 여행 스타일, 언어를 분석해 최적의 친구를 추천합니다</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🌐</div>
+        <h3>실시간 자동 번역</h3>
+        <p>50개 언어 실시간 번역으로 언어 장벽 없는 소통을 경험하세요</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🗺️</div>
+        <h3>로컬 체험 연결</h3>
+        <p>현지 친구와 함께하는 숨겨진 맛집, 로컬 축제, 진짜 여행</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- SERVICE FLOW -->
+  <div class="flow-section">
+    <div style="text-align:center">
+      <div class="section-title">서비스 이용 흐름</div>
+      <div class="section-sub">7단계로 완성되는 글로벌 친구 경험</div>
+    </div>
+    <div class="flow-steps">
+      <div class="flow-step">
+        <div class="flow-step-icon" style="background:#FFF0EB">🔐</div>
+        <div class="flow-step-label">블록체인<br>인증 가입</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">
+        <div class="flow-step-icon" style="background:#EBF5FF">✈️</div>
+        <div class="flow-step-label">여행지<br>선택</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">
+        <div class="flow-step-icon" style="background:#EFF">🤝</div>
+        <div class="flow-step-label">AI<br>친구 매칭</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">
+        <div class="flow-step-icon" style="background:#FFF8E1">💬</div>
+        <div class="flow-step-label">채팅<br>사전 교류</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">
+        <div class="flow-step-icon" style="background:#F0FFF4">🎉</div>
+        <div class="flow-step-label">오프라인<br>체험</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">
+        <div class="flow-step-icon" style="background:#F3E8FF">🌏</div>
+        <div class="flow-step-label">네트워크<br>확장</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">
+        <div class="flow-step-icon" style="background:#FFF0F0">⭐</div>
+        <div class="flow-step-label">후기 &<br>평가</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DESTINATION SEARCH -->
+  <div style="padding: 30px 0 60px;">
+    <div style="padding: 0 24px; max-width: 900px; margin: 0 auto;">
+      <div class="search-section">
+        <div class="search-title">🔍 어디로 여행 가시나요?</div>
+        <div class="search-sub">목적지를 선택하면 AI가 맞춤 현지 친구를 추천해드립니다</div>
+        <div class="search-bar">
+          <input type="text" id="search-input" placeholder="도시 또는 국가 검색..." oninput="filterChips(this.value)">
+          <button onclick="goToMatch()">친구 찾기</button>
+        </div>
+        <div class="country-chips" id="country-chips">
+          <div class="chip" onclick="selectChip(this, '일본 도쿄')">🇯🇵 일본 도쿄</div>
+          <div class="chip" onclick="selectChip(this, '태국 방콕')">🇹🇭 태국 방콕</div>
+          <div class="chip" onclick="selectChip(this, '스페인 바르셀로나')">🇪🇸 스페인 바르셀로나</div>
+          <div class="chip" onclick="selectChip(this, '프랑스 파리')">🇫🇷 프랑스 파리</div>
+          <div class="chip" onclick="selectChip(this, '호주 브리즈번')">🇦🇺 호주 브리즈번</div>
+          <div class="chip" onclick="selectChip(this, '인도 델리')">🇮🇳 인도 델리</div>
+          <div class="chip" onclick="selectChip(this, '대만 타이페이')">🇹🇼 대만 타이페이</div>
+          <div class="chip" onclick="selectChip(this, '홍콩')">🇭🇰 홍콩</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- REVIEWS -->
+  <div class="reviews-section">
+    <div class="section-title">실제 사용자 후기</div>
+    <div class="section-sub">"여행이 달라졌어요" - 글로벌 친구를 만난 분들의 이야기</div>
+    <div class="reviews-grid">
+      <div class="review-card">
+        <div class="review-flag">🇫🇷</div>
+        <div class="stars">★★★★★</div>
+        <div class="review-title">그림책 속 파리, 이제는 친구 집에서 아침을 맞이했어요</div>
+        <div class="review-text">"만난 클레망 덕분에 루브르 미술관 구석구석, 가족이 준비한 홈브런치까지. 혼자가 아니니 겁도 줄고 파리가 제 두 번째 집처럼 느껴졌습니다."</div>
+        <div class="review-author"><div class="review-author-avatar">👩</div><div><div class="review-author-name">김지은</div><div style="font-size:0.72rem;color:var(--text-light)">파리 여행자</div></div></div>
+      </div>
+      <div class="review-card">
+        <div class="review-flag">🇯🇵</div>
+        <div class="stars">★★★★★</div>
+        <div class="review-title">혼밥할 줄 알았던 도쿄, 일본 친구와 라멘 먹으며 웃게 되다니</div>
+        <div class="review-text">"유키와 이자카야에서 일본식 건배도 배우고, 마지막 날엔 오다이바에서 함께 해넘이도 봤습니다. 친구가 생겼다는 게 이런 기분이구나."</div>
+        <div class="review-author"><div class="review-author-avatar">👨</div><div><div class="review-author-name">박민준</div><div style="font-size:0.72rem;color:var(--text-light)">도쿄 여행자</div></div></div>
+      </div>
+      <div class="review-card">
+        <div class="review-flag">🇹🇭</div>
+        <div class="stars">★★★★★</div>
+        <div class="review-title">여행자에게 진짜 필요한 건 구글보다 한 명의 현지 친구예요</div>
+        <div class="review-text">"현지 대학생 폰이 안내한 야시장에서 로컬 가격으로 똠얌꿍도 먹고, 교통 앱 설정까지 도와줘서 지갑도 덜 열렸고요!"</div>
+        <div class="review-author"><div class="review-author-avatar">👩</div><div><div class="review-author-name">이소연</div><div style="font-size:0.72rem;color:var(--text-light)">방콕 여행자</div></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER CTA -->
+  <div style="background: var(--secondary); color: white; text-align: center; padding: 60px 24px;">
+    <div style="font-size: 1.6rem; font-weight: 900; margin-bottom: 12px;">지금 바로 시작하세요</div>
+    <div style="opacity: 0.8; margin-bottom: 28px; font-size: 0.95rem;">첫 매칭은 무료입니다. 블록체인 인증으로 안전하게.</div>
+    <button onclick="showToast('🚀 베타 출시 사전 등록이 완료되었습니다!')" style="padding: 16px 36px; background: var(--primary); color: white; border: none; border-radius: 30px; font-size: 1.05rem; font-weight: 800; cursor: pointer;">무료로 시작하기</button>
+  </div>
+</div>
+
+<!-- MATCH PAGE -->
+<div id="page-match" class="page">
+  <div class="match-header">
+    <div class="match-badge">🤖 AI 매칭 완료</div>
+    <h2>🗼 일본 도쿄 현지 친구</h2>
+    <p>관심사와 여행 스타일을 분석해 최적의 친구를 추천했어요</p>
+  </div>
+
+  <!-- inline search for match page -->
+  <div style="padding: 20px 24px; max-width: 900px; margin: 0 auto;">
+    <div style="display:flex; gap:10px; margin-bottom: 16px;">
+      <div class="chip selected">🇯🇵 도쿄</div>
+      <div class="chip" onclick="selectChipMatch(this, '🇹🇭 방콕')">🇹🇭 방콕</div>
+      <div class="chip" onclick="selectChipMatch(this, '🇫🇷 파리')">🇫🇷 파리</div>
+      <div class="chip" onclick="selectChipMatch(this, '🇪🇸 바르셀로나')">🇪🇸 바르셀로나</div>
+      <div class="chip" onclick="selectChipMatch(this, '🇦🇺 브리즈번')">🇦🇺 브리즈번</div>
+    </div>
+    <div style="font-size: 0.82rem; color: var(--text-light);">✨ 4명의 추천 친구를 찾았습니다</div>
+  </div>
+
+  <div class="friends-grid">
+    <!-- Friend 1 -->
+    <div class="friend-card" onclick="openModal('yuki')">
+      <div class="friend-card-header" style="background: linear-gradient(135deg, #FF9A9E, #FAD0C4);">
+        <div class="friend-avatar" style="background: #FFF0F0;">🌸</div>
+        <div class="verified-badge">✓ 인증됨</div>
+        <div class="match-score">98% 매칭</div>
+      </div>
+      <div class="friend-card-body">
+        <div class="friend-name">유키 (Yuki) 🇯🇵</div>
+        <div class="friend-location">📍 도쿄 신주쿠 · 온라인</div>
+        <div class="friend-bio">안녕하세요! 도쿄 라멘 투어 전문 가이드예요. 숨겨진 이자카야와 오타쿠 명소를 안내해드릴게요 🍜</div>
+        <div class="friend-tags">
+          <span class="tag">맛집탐방</span><span class="tag">애니메이션</span><span class="tag">한국어 가능</span><span class="tag">사진</span>
+        </div>
+        <div class="friend-card-footer">
+          <button class="btn-connect" onclick="event.stopPropagation(); openChat('yuki')">💬 채팅하기</button>
+          <button class="btn-save" onclick="event.stopPropagation(); showToast('💖 저장되었습니다!')">♡</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Friend 2 -->
+    <div class="friend-card" onclick="openModal('kenji')">
+      <div class="friend-card-header" style="background: linear-gradient(135deg, #A18CD1, #FBC2EB);">
+        <div class="friend-avatar" style="background: #F0EAFF;">🎌</div>
+        <div class="verified-badge">✓ 인증됨</div>
+        <div class="match-score">94% 매칭</div>
+      </div>
+      <div class="friend-card-body">
+        <div class="friend-name">켄지 (Kenji) 🇯🇵</div>
+        <div class="friend-location">📍 도쿄 시부야 · 온라인</div>
+        <div class="friend-bio">IT 개발자이자 서핑 매니아! 시부야 숨은 카페와 하라주쿠 스트릿 패션 함께 즐겨요 🏄</div>
+        <div class="friend-tags">
+          <span class="tag">카페</span><span class="tag">패션</span><span class="tag">IT</span><span class="tag">영어 가능</span>
+        </div>
+        <div class="friend-card-footer">
+          <button class="btn-connect" onclick="event.stopPropagation(); openChat('kenji')">💬 채팅하기</button>
+          <button class="btn-save" onclick="event.stopPropagation(); showToast('💖 저장되었습니다!')">♡</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Friend 3 -->
+    <div class="friend-card" onclick="openModal('hana')">
+      <div class="friend-card-header" style="background: linear-gradient(135deg, #84FAB0, #8FD3F4);">
+        <div class="friend-avatar" style="background: #F0FFF8;">🍃</div>
+        <div class="verified-badge">✓ 인증됨</div>
+        <div class="match-score">91% 매칭</div>
+      </div>
+      <div class="friend-card-body">
+        <div class="friend-name">하나 (Hana) 🇯🇵</div>
+        <div class="friend-location">📍 교토 기온 · 2시간 전 접속</div>
+        <div class="friend-bio">교토 거주 전통문화 마니아 🌿 다도, 기모노 체험, 사찰 투어 함께해요. 한국 드라마 좋아해요!</div>
+        <div class="friend-tags">
+          <span class="tag">전통문화</span><span class="tag">다도</span><span class="tag">한드팬</span><span class="tag">사찰</span>
+        </div>
+        <div class="friend-card-footer">
+          <button class="btn-connect" onclick="event.stopPropagation(); openChat('hana')">💬 채팅하기</button>
+          <button class="btn-save" onclick="event.stopPropagation(); showToast('💖 저장되었습니다!')">♡</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Friend 4 -->
+    <div class="friend-card" onclick="openModal('taro')">
+      <div class="friend-card-header" style="background: linear-gradient(135deg, #F6D365, #FDA085);">
+        <div class="friend-avatar" style="background: #FFFBF0;">⚽</div>
+        <div class="verified-badge">✓ 인증됨</div>
+        <div class="match-score">87% 매칭</div>
+      </div>
+      <div class="friend-card-body">
+        <div class="friend-name">타로 (Taro) 🇯🇵</div>
+        <div class="friend-location">📍 오사카 난바 · 3시간 전 접속</div>
+        <div class="friend-bio">오사카 스트리트푸드 전문가 🍡 타코야키, 오코노미야키 맛집 다 알고 있어요. 축구 함께 보실 분!</div>
+        <div class="friend-tags">
+          <span class="tag">길거리음식</span><span class="tag">축구</span><span class="tag">오사카</span><span class="tag">야경</span>
+        </div>
+        <div class="friend-card-footer">
+          <button class="btn-connect" onclick="event.stopPropagation(); openChat('taro')">💬 채팅하기</button>
+          <button class="btn-save" onclick="event.stopPropagation(); showToast('💖 저장되었습니다!')">♡</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CHAT PAGE -->
+<div id="page-chat" class="page">
+  <div class="chat-layout">
+    <!-- SIDEBAR -->
+    <div class="chat-sidebar">
+      <div class="chat-sidebar-header">
+        <h3>💬 메시지</h3>
+      </div>
+      <div class="chat-list-item active" onclick="switchChat('yuki')">
+        <div class="chat-avatar-wrap">
+          <div class="chat-list-avatar" style="background:#FFF0F0;">🌸</div>
+          <div class="online-dot"></div>
+        </div>
+        <div class="chat-list-info">
+          <div class="chat-list-name">유키 🇯🇵</div>
+          <div class="chat-list-preview">도쿄 맛집 알려드릴게요!</div>
+        </div>
+        <div class="chat-list-meta">
+          <div class="chat-list-time">방금</div>
+          <div class="unread-badge">2</div>
+        </div>
+      </div>
+      <div class="chat-list-item" onclick="switchChat('hana')">
+        <div class="chat-avatar-wrap">
+          <div class="chat-list-avatar" style="background:#F0FFF8;">🍃</div>
+        </div>
+        <div class="chat-list-info">
+          <div class="chat-list-name">하나 🇯🇵</div>
+          <div class="chat-list-preview">교토 사찰 투어 어때요?</div>
+        </div>
+        <div class="chat-list-meta">
+          <div class="chat-list-time">2h</div>
+        </div>
+      </div>
+      <div class="chat-list-item" onclick="switchChat('kenji')">
+        <div class="chat-avatar-wrap">
+          <div class="chat-list-avatar" style="background:#F0EAFF;">🎌</div>
+        </div>
+        <div class="chat-list-info">
+          <div class="chat-list-name">켄지 🇯🇵</div>
+          <div class="chat-list-preview">시부야 카페 좋아요?</div>
+        </div>
+        <div class="chat-list-meta">
+          <div class="chat-list-time">1d</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CHAT WINDOW -->
+    <div class="chat-window">
+      <div class="chat-header">
+        <div class="chat-header-avatar" style="background:#FFF0F0;">🌸</div>
+        <div class="chat-header-info">
+          <div class="chat-header-name">유키 (Yuki)</div>
+          <div class="chat-header-status">온라인 · 도쿄 신주쿠</div>
+        </div>
+        <div class="translate-toggle on" id="translate-toggle" onclick="toggleTranslate()">
+          <div class="toggle-switch on" id="toggle-sw"><div class="toggle-knob on" id="toggle-knob"></div></div>
+          <span id="translate-label">🌐 자동번역 ON</span>
+        </div>
+      </div>
+
+      <div class="chat-messages" id="chat-messages">
+        <!-- Date divider -->
+        <div style="text-align:center; font-size:0.72rem; color:var(--text-light); background: var(--border); display:inline-block; padding: 4px 12px; border-radius:10px; margin: 0 auto;">오늘</div>
+
+        <div class="msg-row theirs">
+          <div class="msg-avatar" style="background:#FFF0F0;">🌸</div>
+          <div class="msg-group">
+            <div class="msg-bubble">
+              こんにちは！東京に来るんですね！楽しみにしてます 🎉
+              <div class="msg-translation">🌐 안녕하세요! 도쿄에 오시는군요! 기대되어요 🎉</div>
+            </div>
+            <div class="msg-time">오후 2:14</div>
+          </div>
+        </div>
+
+        <div class="msg-row mine">
+          <div class="msg-group">
+            <div class="msg-bubble">
+              안녕하세요 유키상! 다음달 10일에 도쿄 가요 😊 라멘 맛집 추천해주실 수 있어요?
+              <div class="msg-translation">🌐 こんにちはユキさん！来月10日に東京に行きます 😊 ラーメンのおすすめ教えてもらえますか？</div>
+            </div>
+            <div class="msg-time">오후 2:15</div>
+          </div>
+        </div>
+
+        <div class="msg-row theirs">
+          <div class="msg-avatar" style="background:#FFF0F0;">🌸</div>
+          <div class="msg-group">
+            <div class="msg-bubble">
+              もちろん！新宿に超おいしいラーメン屋さんがあります！一緒に行きましょう 🍜
+              <div class="msg-translation">🌐 물론이죠! 신주쿠에 엄청 맛있는 라멘 가게가 있어요! 같이 가요 🍜</div>
+            </div>
+            <div class="msg-time">오후 2:16</div>
+          </div>
+        </div>
+
+        <div class="msg-row theirs">
+          <div class="msg-avatar" style="background:#FFF0F0;">🌸</div>
+          <div class="msg-group">
+            <div class="msg-bubble">
+              あと、渋谷のスクランブル交差点も一緒に見に行きませんか？夜景がきれいですよ ✨
+              <div class="msg-translation">🌐 그리고 시부야 스크램블 교차로도 같이 보러 가지 않을래요? 야경이 예뻐요 ✨</div>
+            </div>
+            <div class="msg-time">오후 2:16</div>
+          </div>
+        </div>
+
+        <div class="msg-row mine">
+          <div class="msg-group">
+            <div class="msg-bubble">
+              와 너무 좋아요! 공항 근처 숙소 잡으면 신주쿠까지 얼마나 걸려요?
+              <div class="msg-translation">🌐 わあ、いいですね！空港近くに宿を取ったら新宿まで何分かかりますか？</div>
+            </div>
+            <div class="msg-time">오후 2:18</div>
+          </div>
+        </div>
+
+        <div id="messages-end"></div>
+      </div>
+
+      <div class="chat-input-area">
+        <div class="translate-hint" id="translate-hint">🌐 입력하시면 일본어로 자동 번역됩니다</div>
+        <div class="chat-input-row">
+          <textarea class="chat-input" id="msg-input" placeholder="메시지를 입력하세요..." rows="1" onkeydown="handleKeydown(event)" oninput="autoResize(this)"></textarea>
+          <button class="send-btn" onclick="sendMessage()">➤</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PROFILE MODAL -->
+<div class="modal-overlay" id="modal-overlay" onclick="closeModal(event)">
+  <div class="modal" id="modal-content">
+    <div class="modal-header-bg" id="modal-header-bg">
+      <button class="modal-close-x" onclick="closeModalDirect()">✕</button>
+      <div class="modal-avatar" id="modal-avatar">🌸</div>
+    </div>
+    <div class="modal-body" style="text-align:center;">
+      <div class="modal-name" id="modal-name">유키</div>
+      <div class="modal-location" id="modal-location">📍 도쿄 신주쿠, 일본</div>
+      <div class="modal-stats">
+        <div class="modal-stat"><div class="modal-stat-num" id="modal-rating">4.9</div><div class="modal-stat-label">⭐ 평점</div></div>
+        <div class="modal-stat"><div class="modal-stat-num" id="modal-trips">23</div><div class="modal-stat-label">함께한 여행</div></div>
+        <div class="modal-stat"><div class="modal-stat-num" id="modal-match">98%</div><div class="modal-stat-label">매칭률</div></div>
+      </div>
+      <div class="modal-tags" id="modal-tags"></div>
+      <div class="modal-bio" id="modal-bio"></div>
+      <div style="background:#F0FFF4; border-radius: 10px; padding: 10px 14px; font-size: 0.78rem; color: var(--success); margin-bottom: 16px; display: flex; align-items: center; justify-content: center; gap: 6px;">
+        🔗 블록체인 신원 인증 완료 · DID 기반 인증
+      </div>
+      <div class="modal-actions">
+        <button class="btn-message" id="modal-chat-btn" onclick="closeModalDirect(); showPage('chat')">💬 채팅 시작하기</button>
+        <button class="btn-close-modal" onclick="closeModalDirect()">닫기</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- BOTTOM NAV -->
+<div class="bottom-nav">
+  <div class="bottom-nav-inner">
+    <div class="bottom-nav-item active" onclick="showPage('home'); setActiveNav(this)">
+      <div class="bottom-nav-icon">🏠</div>
+      <div class="bottom-nav-label">홈</div>
+    </div>
+    <div class="bottom-nav-item" onclick="showPage('match'); setActiveNav(this)">
+      <div class="bottom-nav-icon">🔍</div>
+      <div class="bottom-nav-label">매칭</div>
+    </div>
+    <div class="bottom-nav-item" onclick="showPage('chat'); setActiveNav(this)">
+      <div class="bottom-nav-icon">💬</div>
+      <div class="bottom-nav-label">채팅</div>
+    </div>
+    <div class="bottom-nav-item" onclick="showToast('🚀 곧 출시 예정입니다!')">
+      <div class="bottom-nav-icon">👤</div>
+      <div class="bottom-nav-label">프로필</div>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+  // PAGE NAVIGATION
+  function showPage(name) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById('page-' + name).classList.add('active');
+    window.scrollTo(0, 0);
+  }
+
+  // TOAST
+  let toastTimer;
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.classList.remove('show'), 2800);
+  }
+
+  // CHIP SELECTION
+  let selectedDest = '일본 도쿄';
+  function selectChip(el, dest) {
+    document.querySelectorAll('#country-chips .chip').forEach(c => c.classList.remove('selected'));
+    el.classList.add('selected');
+    selectedDest = dest;
+    document.getElementById('search-input').value = dest;
+  }
+  function selectChipMatch(el, dest) {
+    document.querySelectorAll('#page-match .chip').forEach(c => c.classList.remove('selected'));
+    el.classList.add('selected');
+    showToast('🤖 AI가 ' + dest + ' 친구를 검색 중...');
+    setTimeout(() => showToast('✨ 새로운 친구를 찾았습니다!'), 1400);
+  }
+  function filterChips(v) { /* simple visual feedback */ }
+  function goToMatch() { showPage('match'); showToast('🤖 AI 매칭 중...'); }
+
+  // TRANSLATE TOGGLE
+  let translateOn = true;
+  function toggleTranslate() {
+    translateOn = !translateOn;
+    document.getElementById('toggle-sw').className = 'toggle-switch' + (translateOn ? ' on' : '');
+    document.getElementById('toggle-knob').className = 'toggle-knob' + (translateOn ? ' on' : '');
+    document.getElementById('translate-label').textContent = translateOn ? '🌐 자동번역 ON' : '자동번역 OFF';
+    document.getElementById('translate-toggle').className = 'translate-toggle' + (translateOn ? ' on' : '');
+    document.getElementById('translate-hint').style.display = translateOn ? 'flex' : 'none';
+    // toggle translation texts
+    document.querySelectorAll('.msg-translation').forEach(el => el.style.display = translateOn ? 'flex' : 'none');
+  }
+
+  // SEND MESSAGE
+  const jpTranslations = {
+    default: 'ありがとうございます！楽しみにしていますね 😊'
+  };
+  const krReplies = [
+    { jp: 'はい、電車で約45分ですよ！Suicaカードを使うと便利です 🚃', kr: '네, 전철로 약 45분이에요! 스이카 카드 쓰면 편해요 🚃' },
+    { jp: 'もちろん！ぜひ一緒に楽しみましょう ✨', kr: '물론이죠! 같이 즐겨요 ✨' },
+    { jp: '待ってますね！楽しい旅になりますように 🗾', kr: '기다릴게요! 즐거운 여행 되세요 🗾' },
+  ];
+  let replyIdx = 0;
+
+  function sendMessage() {
+    const input = document.getElementById('msg-input');
+    const text = input.value.trim();
+    if (!text) return;
+
+    const container = document.getElementById('chat-messages');
+    const myMsg = document.createElement('div');
+    myMsg.className = 'msg-row mine';
+    const jpText = translateOn ? '<div class="msg-translation">🌐 ' + getJpTranslation(text) + '</div>' : '';
+    myMsg.innerHTML = `<div class="msg-group"><div class="msg-bubble">${escHtml(text)}${jpText}</div><div class="msg-time">${getTime()}</div></div>`;
+    container.insertBefore(myMsg, document.getElementById('messages-end'));
+
+    input.value = '';
+    input.style.height = 'auto';
+    scrollChat();
+
+    // Auto-reply
+    setTimeout(() => {
+      const reply = krReplies[replyIdx % krReplies.length];
+      replyIdx++;
+      const theirMsg = document.createElement('div');
+      theirMsg.className = 'msg-row theirs';
+      const transText = translateOn ? `<div class="msg-translation">🌐 ${reply.kr}</div>` : '';
+      theirMsg.innerHTML = `<div class="msg-avatar" style="background:#FFF0F0;">🌸</div><div class="msg-group"><div class="msg-bubble">${reply.jp}${transText}</div><div class="msg-time">${getTime()}</div></div>`;
+      container.insertBefore(theirMsg, document.getElementById('messages-end'));
+      scrollChat();
+    }, 900 + Math.random() * 600);
+  }
+
+  function getJpTranslation(text) {
+    if (text.includes('숙소') || text.includes('어디')) return 'どこに泊まる予定ですか？';
+    if (text.includes('맛집') || text.includes('먹')) return '美味しいお店教えてもらえますか？';
+    if (text.includes('감사') || text.includes('고마')) return 'ありがとうございます！';
+    if (text.includes('안녕')) return 'こんにちは！';
+    return 'とても楽しみにしています！';
+  }
+
+  function escHtml(t) { return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+  function getTime() { const n=new Date(); return `오후 ${n.getHours()}:${String(n.getMinutes()).padStart(2,'0')}`; }
+  function scrollChat() { const m=document.getElementById('chat-messages'); m.scrollTop=m.scrollHeight; }
+  function handleKeydown(e) { if (e.key==='Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); } }
+  function autoResize(el) { el.style.height='auto'; el.style.height=Math.min(el.scrollHeight,100)+'px'; }
+
+  // MODAL DATA
+  const friends = {
+    yuki: { name: '유키 (Yuki) 🇯🇵', loc: '📍 도쿄 신주쿠, 일본', avatar: '🌸', bg: 'linear-gradient(135deg,#FF9A9E,#FAD0C4)', rating: '4.9', trips: '23', match: '98%', tags: ['맛집탐방','애니메이션','한국어 가능','사진','라멘'], bio: '안녕하세요! 도쿄 라멘 투어 전문 가이드예요. 숨겨진 이자카야와 오타쿠 명소를 안내해드릴게요. 한국 친구 환영합니다 🍜' },
+    kenji: { name: '켄지 (Kenji) 🇯🇵', loc: '📍 도쿄 시부야, 일본', avatar: '🎌', bg: 'linear-gradient(135deg,#A18CD1,#FBC2EB)', rating: '4.8', trips: '17', match: '94%', tags: ['카페','패션','IT','영어 가능','서핑'], bio: 'IT 개발자이자 서핑 매니아! 시부야 숨은 카페와 하라주쿠 스트릿 패션 함께 즐겨요 🏄' },
+    hana: { name: '하나 (Hana) 🇯🇵', loc: '📍 교토 기온, 일본', avatar: '🍃', bg: 'linear-gradient(135deg,#84FAB0,#8FD3F4)', rating: '5.0', trips: '31', match: '91%', tags: ['전통문화','다도','한드팬','사찰','기모노'], bio: '교토 거주 전통문화 마니아 🌿 다도, 기모노 체험, 사찰 투어 함께해요. 한국 드라마 좋아해요!' },
+    taro: { name: '타로 (Taro) 🇯🇵', loc: '📍 오사카 난바, 일본', avatar: '⚽', bg: 'linear-gradient(135deg,#F6D365,#FDA085)', rating: '4.7', trips: '12', match: '87%', tags: ['길거리음식','축구','오사카','야경','타코야키'], bio: '오사카 스트리트푸드 전문가 🍡 타코야키, 오코노미야키 맛집 다 알고 있어요. 축구 함께 보실 분!' },
+  };
+
+  function openModal(id) {
+    const f = friends[id];
+    document.getElementById('modal-header-bg').style.background = f.bg;
+    document.getElementById('modal-avatar').textContent = f.avatar;
+    document.getElementById('modal-name').textContent = f.name;
+    document.getElementById('modal-location').textContent = f.loc;
+    document.getElementById('modal-rating').textContent = f.rating;
+    document.getElementById('modal-trips').textContent = f.trips;
+    document.getElementById('modal-match').textContent = f.match;
+    document.getElementById('modal-bio').textContent = f.bio;
+    const tagsEl = document.getElementById('modal-tags');
+    tagsEl.innerHTML = f.tags.map(t => `<span class="tag">${t}</span>`).join('');
+    document.getElementById('modal-overlay').classList.add('open');
+  }
+  function closeModal(e) { if (e.target === document.getElementById('modal-overlay')) closeModalDirect(); }
+  function closeModalDirect() { document.getElementById('modal-overlay').classList.remove('open'); }
+
+  function openChat(id) {
+    showPage('chat');
+  }
+  function switchChat(id) {
+    document.querySelectorAll('.chat-list-item').forEach(el => el.classList.remove('active'));
+    event.currentTarget.classList.add('active');
+  }
+
+  function setActiveNav(el) {
+    document.querySelectorAll('.bottom-nav-item').forEach(e => e.classList.remove('active'));
+    el.classList.add('active');
+  }
+</script>
+</body>
+</html>
