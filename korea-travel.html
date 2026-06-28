@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KoreaPop Travel — 제주 & 부산 찐 여행 가이드</title>
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --red: #FF385C;
+  --red-dark: #E31C5F;
+  --teal: #00A699;
+  --gray1: #222222;
+  --gray2: #484848;
+  --gray3: #767676;
+  --gray4: #DDDDDD;
+  --gray5: #F7F7F7;
+  --white: #FFFFFF;
+  --jeju: #00B894;
+  --busan: #0984E3;
+  --shadow: 0 2px 8px rgba(0,0,0,0.08), 0 0 0 1px rgba(0,0,0,0.04);
+  --shadow-md: 0 6px 20px rgba(0,0,0,0.12);
+  --r: 12px;
+}
+html { scroll-behavior: smooth; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif; background: var(--white); color: var(--gray2); }
+a { color: inherit; text-decoration: none; }
+button { font-family: inherit; cursor: pointer; }
+img { max-width: 100%; }
+
+/* ── NAV ── */
+.nav {
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(255,255,255,0.95); backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--gray4);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 24px; height: 60px;
+}
+.nav-logo { font-size: 1.15rem; font-weight: 800; display: flex; align-items: center; gap: 8px; cursor: pointer; }
+.nav-logo .logo-k { color: var(--red); }
+.nav-logo .logo-dot { width: 6px; height: 6px; background: var(--red); border-radius: 50%; display: inline-block; }
+.nav-tabs { display: flex; gap: 2px; }
+.nav-tab {
+  padding: 7px 14px; border-radius: 20px; border: none; background: none;
+  font-size: 0.83rem; font-weight: 600; color: var(--gray3); transition: all 0.15s;
+}
+.nav-tab:hover { background: var(--gray5); color: var(--gray2); }
+.nav-tab.on { background: var(--gray1); color: white; }
+.nav-right { display: flex; gap: 8px; }
+.nav-btn {
+  padding: 8px 16px; border-radius: 20px; border: 1px solid var(--gray4);
+  background: none; font-size: 0.82rem; font-weight: 600; color: var(--gray2);
+  transition: box-shadow 0.15s;
+}
+.nav-btn:hover { box-shadow: var(--shadow); }
+.nav-btn.primary { background: var(--red); color: white; border-color: var(--red); }
+.nav-btn.primary:hover { background: var(--red-dark); }
+
+/* ── PAGES ── */
+.page { display: none; }
+.page.active { display: block; }
+
+/* ── HERO ── */
+.hero {
+  position: relative; overflow: hidden;
+  min-height: 520px; display: flex; align-items: center;
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 60%, #0f3460 100%);
+}
+.hero-bg {
+  position: absolute; inset: 0;
+  background-image:
+    radial-gradient(circle at 20% 50%, rgba(255,56,92,0.18) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(0,166,153,0.12) 0%, transparent 45%);
+}
+.hero-inner { position: relative; z-index: 1; max-width: 1080px; margin: 0 auto; padding: 60px 24px; display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: center; width: 100%; }
+.hero-kpop-badge {
+  display: inline-flex; align-items: center; gap: 8px; margin-bottom: 18px;
+  background: rgba(255,56,92,0.15); border: 1px solid rgba(255,56,92,0.3);
+  color: #FF8FA3; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.5px;
+  padding: 6px 14px; border-radius: 20px; text-transform: uppercase;
+}
+.hero-kpop-badge span { animation: blink 2s infinite; }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.4} }
+.hero h1 { font-size: 2.6rem; font-weight: 900; color: white; line-height: 1.1; letter-spacing: -1px; margin-bottom: 16px; }
+.hero h1 em { color: var(--red); font-style: normal; }
+.hero-sub { color: rgba(255,255,255,0.6); font-size: 0.95rem; line-height: 1.75; margin-bottom: 28px; }
+.hero-ctas { display: flex; gap: 10px; flex-wrap: wrap; }
+.btn-hero-r { padding: 13px 24px; background: var(--red); color: white; border: none; border-radius: 10px; font-size: 0.9rem; font-weight: 700; transition: all 0.2s; }
+.btn-hero-r:hover { background: var(--red-dark); transform: translateY(-1px); box-shadow: 0 8px 20px rgba(255,56,92,0.4); }
+.btn-hero-g { padding: 13px 24px; background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.25); border-radius: 10px; font-size: 0.9rem; font-weight: 600; transition: all 0.2s; backdrop-filter: blur(8px); }
+.btn-hero-g:hover { background: rgba(255,255,255,0.18); }
+
+/* Hero city cards */
+.hero-cards { display: flex; flex-direction: column; gap: 14px; }
+.hero-city-card {
+  background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.12);
+  border-radius: var(--r); padding: 18px 20px; backdrop-filter: blur(8px);
+  cursor: pointer; transition: all 0.2s;
+  display: flex; align-items: center; gap: 16px;
+}
+.hero-city-card:hover { background: rgba(255,255,255,0.13); transform: translateX(4px); }
+.city-emoji { font-size: 2rem; }
+.city-info { flex: 1; }
+.city-name { color: white; font-weight: 800; font-size: 1rem; margin-bottom: 2px; }
+.city-desc { color: rgba(255,255,255,0.55); font-size: 0.78rem; }
+.city-tag { background: rgba(255,56,92,0.2); color: #FF8FA3; font-size: 0.68rem; font-weight: 700; padding: 3px 10px; border-radius: 10px; }
+
+/* ── CITY SELECTOR ── */
+.city-sel { background: var(--gray5); padding: 20px 24px; display: flex; align-items: center; justify-content: center; gap: 12px; }
+.city-pill {
+  display: flex; align-items: center; gap: 8px; padding: 10px 22px;
+  border-radius: 30px; border: 2px solid var(--gray4); background: white;
+  font-size: 0.88rem; font-weight: 700; color: var(--gray2); cursor: pointer; transition: all 0.2s;
+}
+.city-pill:hover { border-color: var(--gray2); }
+.city-pill.on.jeju { border-color: var(--jeju); background: var(--jeju); color: white; }
+.city-pill.on.busan { border-color: var(--busan); background: var(--busan); color: white; }
+.city-pill-dot { width: 8px; height: 8px; border-radius: 50%; }
+.jeju-dot { background: var(--jeju); }
+.busan-dot { background: var(--busan); }
+.city-pill.on .city-pill-dot { background: white; }
+
+/* ── SECTION ── */
+.sec { max-width: 1080px; margin: 0 auto; padding: 48px 24px; }
+.sec-hd { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 28px; }
+.sec-title { font-size: 1.3rem; font-weight: 800; letter-spacing: -0.3px; }
+.sec-sub { color: var(--gray3); font-size: 0.83rem; margin-top: 4px; }
+.sec-more { font-size: 0.82rem; font-weight: 700; color: var(--gray2); text-decoration: underline; cursor: pointer; white-space: nowrap; }
+.divider { height: 8px; background: var(--gray5); }
+
+/* ── CATEGORY TABS ── */
+.cat-tabs { display: flex; gap: 8px; padding: 16px 24px; overflow-x: auto; border-bottom: 1px solid var(--gray4); }
+.cat-tab {
+  flex-shrink: 0; display: flex; flex-direction: column; align-items: center; gap: 6px;
+  padding: 10px 16px; border-radius: 10px; border: none; background: none;
+  font-size: 0.75rem; font-weight: 600; color: var(--gray3); cursor: pointer; transition: all 0.15s;
+}
+.cat-tab .cat-icon { font-size: 1.4rem; }
+.cat-tab:hover { background: var(--gray5); color: var(--gray2); }
+.cat-tab.on { background: var(--gray1); color: white; }
+
+/* ── CARDS GRID ── */
+.cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 20px; }
+.card {
+  background: white; border-radius: var(--r); overflow: hidden;
+  box-shadow: var(--shadow); cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;
+}
+.card:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); }
+.card-img {
+  height: 180px; display: flex; align-items: center; justify-content: center;
+  font-size: 3.5rem; position: relative; overflow: hidden;
+}
+.card-badge {
+  position: absolute; top: 10px; left: 10px;
+  background: white; border-radius: 6px; padding: 3px 9px;
+  font-size: 0.68rem; font-weight: 700; box-shadow: var(--shadow);
+  display: flex; align-items: center; gap: 4px;
+}
+.badge-dot { width: 5px; height: 5px; border-radius: 50%; }
+.card-save {
+  position: absolute; top: 10px; right: 10px; font-size: 1.2rem;
+  filter: drop-shadow(0 1px 3px rgba(0,0,0,0.25)); transition: transform 0.15s; cursor: pointer;
+}
+.card-save:hover { transform: scale(1.2); }
+.card-body { padding: 14px; }
+.card-row1 { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2px; }
+.card-name { font-weight: 700; font-size: 0.9rem; }
+.card-rating { font-size: 0.8rem; font-weight: 600; display: flex; align-items: center; gap: 3px; }
+.card-loc { color: var(--gray3); font-size: 0.78rem; margin-bottom: 8px; }
+.card-desc { color: var(--gray2); font-size: 0.8rem; line-height: 1.55; margin-bottom: 10px; }
+.card-tags { display: flex; flex-wrap: wrap; gap: 5px; }
+.tag { background: var(--gray5); color: var(--gray2); font-size: 0.7rem; padding: 3px 8px; border-radius: 6px; }
+.tag.red { background: #FFF0F2; color: var(--red); }
+.tag.teal { background: #E6FAF8; color: var(--teal); }
+.tag.jeju-c { background: #E6F9F4; color: var(--jeju); }
+.tag.busan-c { background: #E6F4FD; color: var(--busan); }
+
+/* ── FRIEND / GUIDE CARDS ── */
+.guide-card {
+  background: white; border-radius: var(--r); padding: 20px;
+  box-shadow: var(--shadow); cursor: pointer; transition: all 0.2s;
+  display: flex; flex-direction: column; gap: 12px;
+}
+.guide-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); }
+.guide-top { display: flex; gap: 14px; align-items: center; }
+.guide-ava { width: 56px; height: 56px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; flex-shrink: 0; }
+.guide-name { font-weight: 800; font-size: 0.95rem; margin-bottom: 2px; }
+.guide-where { color: var(--gray3); font-size: 0.78rem; margin-bottom: 4px; }
+.guide-rating { font-size: 0.8rem; font-weight: 600; color: var(--gray2); }
+.guide-free-badge { display: inline-flex; align-items: center; gap: 5px; background: #E6F9F4; color: var(--teal); font-size: 0.72rem; font-weight: 700; padding: 3px 10px; border-radius: 10px; }
+.guide-langs { display: flex; flex-wrap: wrap; gap: 5px; }
+.guide-bio { font-size: 0.8rem; color: var(--gray3); line-height: 1.6; }
+.guide-btn {
+  width: 100%; padding: 10px; background: var(--red); color: white; border: none;
+  border-radius: 8px; font-weight: 700; font-size: 0.83rem; transition: background 0.15s;
+}
+.guide-btn:hover { background: var(--red-dark); }
+
+/* ── KPOP SPOT CARDS ── */
+.kpop-card {
+  background: white; border-radius: var(--r); overflow: hidden;
+  box-shadow: var(--shadow); transition: all 0.2s; cursor: pointer;
+}
+.kpop-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); }
+.kpop-card-hd { height: 80px; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; position: relative; }
+.kpop-card-body { padding: 16px; }
+.kpop-card-label { font-size: 0.65rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--gray3); margin-bottom: 6px; }
+.kpop-card-name { font-weight: 800; font-size: 0.95rem; margin-bottom: 4px; }
+.kpop-card-desc { font-size: 0.78rem; color: var(--gray3); line-height: 1.5; margin-bottom: 10px; }
+.kpop-artists { display: flex; gap: 6px; flex-wrap: wrap; }
+.artist-pill { font-size: 0.7rem; padding: 3px 10px; border-radius: 10px; font-weight: 600; }
+
+/* ── STAY CARDS ── */
+.stay-card { background: white; border-radius: var(--r); overflow: hidden; box-shadow: var(--shadow); cursor: pointer; transition: all 0.2s; }
+.stay-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); }
+.stay-img { height: 160px; display: flex; align-items: center; justify-content: center; font-size: 3rem; position: relative; }
+.stay-body { padding: 14px; }
+.stay-type { font-size: 0.65rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--gray3); margin-bottom: 4px; }
+.stay-name { font-weight: 700; font-size: 0.9rem; margin-bottom: 2px; }
+.stay-loc { color: var(--gray3); font-size: 0.78rem; margin-bottom: 8px; }
+.stay-price-row { display: flex; align-items: baseline; gap: 4px; }
+.stay-price { font-weight: 800; font-size: 1rem; color: var(--gray1); }
+.stay-per { font-size: 0.75rem; color: var(--gray3); }
+
+/* ── SOUVENIR ── */
+.souvenir-card { background: white; border-radius: var(--r); padding: 18px; box-shadow: var(--shadow); text-align: center; cursor: pointer; transition: all 0.2s; }
+.souvenir-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); }
+.souvenir-emoji { font-size: 2.8rem; margin-bottom: 10px; }
+.souvenir-name { font-weight: 700; font-size: 0.88rem; margin-bottom: 4px; }
+.souvenir-where { color: var(--gray3); font-size: 0.75rem; margin-bottom: 8px; }
+.souvenir-price { font-weight: 800; color: var(--red); font-size: 0.9rem; }
+
+/* ── MAP TEASER ── */
+.map-section { background: var(--gray5); padding: 48px 24px; }
+.map-inner { max-width: 1080px; margin: 0 auto; }
+.map-card {
+  background: white; border-radius: var(--r); overflow: hidden;
+  box-shadow: var(--shadow-md); display: grid; grid-template-columns: 1fr 1fr; min-height: 240px;
+}
+.map-visual {
+  background: linear-gradient(135deg, #e8f5e9 0%, #e3f2fd 100%);
+  display: flex; align-items: center; justify-content: center; padding: 32px;
+  position: relative; overflow: hidden;
+}
+.map-grid-bg {
+  position: absolute; inset: 0;
+  background-image: linear-gradient(rgba(0,0,0,0.05) 1px, transparent 1px),
+                    linear-gradient(90deg, rgba(0,0,0,0.05) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+.map-pin-group { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; gap: 8px; }
+.map-pin { font-size: 2rem; animation: bounce 2s infinite; }
+@keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
+.map-label { background: white; border-radius: 8px; padding: 5px 12px; font-size: 0.78rem; font-weight: 700; box-shadow: var(--shadow); }
+.map-info { padding: 32px; display: flex; flex-direction: column; justify-content: center; gap: 16px; }
+.map-info h3 { font-size: 1.2rem; font-weight: 800; letter-spacing: -0.3px; }
+.map-info p { color: var(--gray3); font-size: 0.85rem; line-height: 1.65; }
+.map-btn { align-self: flex-start; padding: 11px 22px; background: var(--gray1); color: white; border: none; border-radius: 8px; font-weight: 700; font-size: 0.85rem; transition: all 0.15s; }
+.map-btn:hover { background: #333; }
+.map-route-tags { display: flex; gap: 8px; flex-wrap: wrap; }
+
+/* ── MODAL ── */
+.modal-ov { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.55); z-index: 500; align-items: flex-end; justify-content: center; padding: 0; backdrop-filter: blur(4px); }
+.modal-ov.open { display: flex; animation: fdIn 0.2s; }
+@keyframes fdIn { from{opacity:0} to{opacity:1} }
+.modal-box { background: white; border-radius: 24px 24px 0 0; width: 100%; max-width: 600px; max-height: 85vh; overflow-y: auto; animation: slideUp 0.3s cubic-bezier(.34,1.56,.64,1); }
+@keyframes slideUp { from{transform:translateY(60px);opacity:0} to{transform:translateY(0);opacity:1} }
+.modal-hd { height: 200px; display: flex; align-items: flex-end; padding: 20px; position: relative; }
+.modal-hd-emoji { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 5rem; }
+.modal-close { position: absolute; top: 14px; right: 14px; width: 32px; height: 32px; background: white; border: none; border-radius: 50%; box-shadow: var(--shadow); cursor: pointer; font-size: 1rem; display: flex; align-items: center; justify-content: center; }
+.modal-body { padding: 20px 24px 32px; }
+.modal-type { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gray3); margin-bottom: 6px; }
+.modal-title { font-size: 1.4rem; font-weight: 900; letter-spacing: -0.3px; margin-bottom: 4px; }
+.modal-loc { color: var(--gray3); font-size: 0.85rem; margin-bottom: 14px; }
+.modal-rating-row { display: flex; gap: 16px; padding: 14px 0; border-top: 1px solid var(--gray4); border-bottom: 1px solid var(--gray4); margin-bottom: 16px; }
+.modal-stat { }
+.modal-stat-n { font-weight: 800; font-size: 1.05rem; }
+.modal-stat-l { font-size: 0.72rem; color: var(--gray3); margin-top: 1px; }
+.modal-desc { font-size: 0.88rem; line-height: 1.75; color: var(--gray2); margin-bottom: 16px; }
+.modal-tags { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 20px; }
+.modal-cta { width: 100%; padding: 14px; background: var(--red); color: white; border: none; border-radius: var(--r); font-size: 0.95rem; font-weight: 700; transition: background 0.15s; }
+.modal-cta:hover { background: var(--red-dark); }
+.modal-secondary { width: 100%; padding: 12px; background: white; color: var(--gray1); border: 1.5px solid var(--gray4); border-radius: var(--r); font-size: 0.9rem; font-weight: 700; margin-top: 8px; transition: border-color 0.15s; }
+.modal-secondary:hover { border-color: var(--gray1); }
+
+/* ── TOAST ── */
+.toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px); background: var(--gray1); color: white; padding: 12px 22px; border-radius: 30px; font-size: 0.85rem; font-weight: 600; z-index: 600; transition: transform 0.3s cubic-bezier(.34,1.56,.64,1); white-space: nowrap; box-shadow: var(--shadow-md); }
+.toast.show { transform: translateX(-50%) translateY(0); }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 768px) {
+  .hero-inner { grid-template-columns: 1fr; gap: 24px; padding: 40px 20px; }
+  .hero h1 { font-size: 2rem; }
+  .map-card { grid-template-columns: 1fr; }
+  .nav-tabs { display: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav-logo" onclick="showPage('home')">
+    <div class="logo-k">K</div><div class="logo-dot"></div>Travel
+  </div>
+  <div class="nav-tabs">
+    <button class="nav-tab on" onclick="showPage('home'); setTab(this)">홈</button>
+    <button class="nav-tab" onclick="showPage('explore'); setTab(this)">맛집 탐색</button>
+    <button class="nav-tab" onclick="showPage('guide'); setTab(this)">무료 가이드</button>
+    <button class="nav-tab" onclick="showPage('stay'); setTab(this)">숙소 & 쇼핑</button>
+  </div>
+  <div class="nav-right">
+    <button class="nav-btn" onclick="toast('🌐 언어 설정: 한국어 / English / 日本語')">🌐 언어</button>
+    <button class="nav-btn primary" onclick="toast('🎉 회원가입 — 곧 오픈!')">무료 시작</button>
+  </div>
+</nav>
+
+<!-- ══════════════ HOME ══════════════ -->
+<div id="page-home" class="page active">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-inner">
+      <div>
+        <div class="hero-kpop-badge"><span>●</span> K-Pop 팬 전용 여행 가이드</div>
+        <h1>한국의 <em>찐</em><br>로컬을 만나다</h1>
+        <p class="hero-sub">데몬헌터스, BTS, 블랙핑크… K-Pop이 한국으로 이끌었다면<br>제주와 부산의 찐 맛집·현지 친구·숙소까지 한번에.</p>
+        <div class="hero-ctas">
+          <button class="btn-hero-r" onclick="showPage('explore'); setTab(document.querySelectorAll('.nav-tab')[1])">🍜 맛집 탐색</button>
+          <button class="btn-hero-g" onclick="showPage('guide'); setTab(document.querySelectorAll('.nav-tab')[2])">👋 무료 가이드 받기</button>
+        </div>
+      </div>
+      <div class="hero-cards">
+        <div class="hero-city-card" onclick="selectCity('jeju')">
+          <div class="city-emoji">🌊</div>
+          <div class="city-info">
+            <div class="city-name">제주도</div>
+            <div class="city-desc">흑돼지 · 해녀 문화 · 오름 · 감귤</div>
+          </div>
+          <div class="city-tag">인기 ↑</div>
+        </div>
+        <div class="hero-city-card" onclick="selectCity('busan')">
+          <div class="city-emoji">🌉</div>
+          <div class="city-info">
+            <div class="city-name">부산</div>
+            <div class="city-desc">밀면 · 돼지국밥 · 해운대 · 감천</div>
+          </div>
+          <div class="city-tag">트렌딩</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUICK FEATURE CARDS -->
+  <div class="sec">
+    <div class="sec-hd">
+      <div>
+        <div class="sec-title">무엇을 도와드릴까요?</div>
+        <div class="sec-sub">K-Pop 팬이라면 꼭 알아야 할 한국 여행 핵심</div>
+      </div>
+    </div>
+    <div style="display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:16px;">
+      <div class="card" onclick="showPage('explore'); setTab(document.querySelectorAll('.nav-tab')[1])">
+        <div class="card-img" style="background:linear-gradient(135deg,#fff5f5,#ffe0e4);">🍖</div>
+        <div class="card-body">
+          <div class="card-name">찐 맛집</div>
+          <div class="card-loc">제주 · 부산 로컬 맛집</div>
+          <div class="card-desc">현지인만 아는 숨겨진 맛집을 AI가 큐레이션</div>
+        </div>
+      </div>
+      <div class="card" onclick="showPage('guide'); setTab(document.querySelectorAll('.nav-tab')[2])">
+        <div class="card-img" style="background:linear-gradient(135deg,#e6faf8,#d4f5f0);">🙋</div>
+        <div class="card-body">
+          <div class="card-name">무료 현지 가이드</div>
+          <div class="card-loc">로컬 친구와 연결</div>
+          <div class="card-desc">무료로 만나는 현지 친구 가이드, 진짜 로컬 체험</div>
+        </div>
+      </div>
+      <div class="card" onclick="showPage('stay'); setTab(document.querySelectorAll('.nav-tab')[3])">
+        <div class="card-img" style="background:linear-gradient(135deg,#f0f4ff,#e0e8ff);">🏡</div>
+        <div class="card-body">
+          <div class="card-name">추천 숙소</div>
+          <div class="card-loc">게스트하우스 · 한옥 · 호텔</div>
+          <div class="card-desc">K-Pop 팬이 좋아하는 위치의 숙소 모음</div>
+        </div>
+      </div>
+      <div class="card" onclick="showPage('stay'); setTab(document.querySelectorAll('.nav-tab')[3])">
+        <div class="card-img" style="background:linear-gradient(135deg,#fffbe6,#fff3c4);">🛍️</div>
+        <div class="card-body">
+          <div class="card-name">기념품 쇼핑</div>
+          <div class="card-loc">제주 · 부산 특산품</div>
+          <div class="card-desc">어디서 사야 가장 좋은지, 가격까지 정리</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- K-POP SPOTS -->
+  <div class="divider"></div>
+  <div class="sec">
+    <div class="sec-hd">
+      <div>
+        <div class="sec-title">🎤 K-Pop 성지 & 촬영지</div>
+        <div class="sec-sub">좋아하는 아티스트의 발자국을 따라가보세요</div>
+      </div>
+    </div>
+    <div style="display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:16px;">
+      <div class="kpop-card" onclick="openModal('hallyu')">
+        <div class="kpop-card-hd" style="background:linear-gradient(135deg,#fff0f2,#ffe0e5);">🎬</div>
+        <div class="kpop-card-body">
+          <div class="kpop-card-label">부산 · MV 촬영지</div>
+          <div class="kpop-card-name">감천문화마을</div>
+          <div class="kpop-card-desc">총천연색 골목, 수많은 MV와 드라마 배경</div>
+          <div class="kpop-artists">
+            <span class="artist-pill" style="background:#fff0f2;color:#FF385C;">BTS</span>
+            <span class="artist-pill" style="background:#f0f4ff;color:#6c5ce7;">IU</span>
+          </div>
+        </div>
+      </div>
+      <div class="kpop-card" onclick="openModal('jeju-mv')">
+        <div class="kpop-card-hd" style="background:linear-gradient(135deg,#e6faf8,#c8f3ee);">🌿</div>
+        <div class="kpop-card-body">
+          <div class="kpop-card-label">제주 · MV 촬영지</div>
+          <div class="kpop-card-name">성산일출봉</div>
+          <div class="kpop-card-desc">제주의 상징, K-Drama & K-Pop MV 단골 명소</div>
+          <div class="kpop-artists">
+            <span class="artist-pill" style="background:#e6faf8;color:#00A699;">BLACKPINK</span>
+            <span class="artist-pill" style="background:#fff5e6;color:#e17055;">aespa</span>
+          </div>
+        </div>
+      </div>
+      <div class="kpop-card" onclick="openModal('haeundae-kpop')">
+        <div class="kpop-card-hd" style="background:linear-gradient(135deg,#e6f4fd,#cce8fb);">🌊</div>
+        <div class="kpop-card-body">
+          <div class="kpop-card-label">부산 · 촬영지</div>
+          <div class="kpop-card-name">해운대 해수욕장</div>
+          <div class="kpop-card-desc">여름 MV 단골, 한국 최고의 해변 감성</div>
+          <div class="kpop-artists">
+            <span class="artist-pill" style="background:#e6f4fd;color:#0984E3;">NewJeans</span>
+            <span class="artist-pill" style="background:#f5f0ff;color:#a29bfe;">TWICE</span>
+          </div>
+        </div>
+      </div>
+      <div class="kpop-card" onclick="openModal('udo')">
+        <div class="kpop-card-hd" style="background:linear-gradient(135deg,#fffbe6,#fff3c4);">🏝️</div>
+        <div class="kpop-card-body">
+          <div class="kpop-card-label">제주 · 우도</div>
+          <div class="kpop-card-name">우도 땅콩 아이스크림</div>
+          <div class="kpop-card-desc">아이돌 브이로그 단골, 에메랄드 바다</div>
+          <div class="kpop-artists">
+            <span class="artist-pill" style="background:#fffbe6;color:#fdcb6e;">LE SSERAFIM</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAP TEASER -->
+  <div class="map-section">
+    <div class="map-inner">
+      <div class="sec-hd" style="max-width:none;padding:0;margin-bottom:24px;">
+        <div>
+          <div class="sec-title">🗺️ 길도 알려드려요</div>
+          <div class="sec-sub">버스, 지하철, 도보 — 찐 현지 경로</div>
+        </div>
+      </div>
+      <div class="map-card">
+        <div class="map-visual">
+          <div class="map-grid-bg"></div>
+          <div style="display:flex; gap:32px; position:relative; z-index:1;">
+            <div class="map-pin-group">
+              <div class="map-pin">🌊</div>
+              <div class="map-label">제주 공항</div>
+            </div>
+            <div style="display:flex;align-items:center;color:#aaa;font-size:1.2rem;">→</div>
+            <div class="map-pin-group">
+              <div class="map-pin" style="animation-delay:0.3s;">🍖</div>
+              <div class="map-label">흑돼지 골목</div>
+            </div>
+          </div>
+        </div>
+        <div class="map-info">
+          <h3>공항 → 맛집까지 최단 경로</h3>
+          <p>택시, 버스, 렌터카 — 각 상황별 최적 경로를 현지 가이드가 직접 알려드립니다. 구글맵이 모르는 로컬 길도 포함.</p>
+          <div class="map-route-tags">
+            <span class="tag teal">🚌 버스</span>
+            <span class="tag">🚕 택시</span>
+            <span class="tag">🛵 렌터카</span>
+            <span class="tag">🚶 도보</span>
+          </div>
+          <button class="map-btn" onclick="toast('🗺️ 경로 안내 — 출시 후 이용 가능합니다!')">경로 안내 받기</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ══════════════ EXPLORE (맛집) ══════════════ -->
+<div id="page-explore" class="page">
+  <div class="city-sel">
+    <div class="city-pill jeju on" id="pill-jeju" onclick="selectCity('jeju')">
+      <div class="city-pill-dot jeju-dot"></div> 🌊 제주도
+    </div>
+    <div class="city-pill busan" id="pill-busan" onclick="selectCity('busan')">
+      <div class="city-pill-dot busan-dot"></div> 🌉 부산
+    </div>
+  </div>
+
+  <!-- CATEGORY TABS -->
+  <div class="cat-tabs" id="cat-tabs">
+    <button class="cat-tab on" onclick="setCat(this)"><span class="cat-icon">🍽️</span>전체</button>
+    <button class="cat-tab" onclick="setCat(this)"><span class="cat-icon">🥩</span>고기</button>
+    <button class="cat-tab" onclick="setCat(this)"><span class="cat-icon">🍜</span>국수·면</button>
+    <button class="cat-tab" onclick="setCat(this)"><span class="cat-icon">🦞</span>해산물</button>
+    <button class="cat-tab" onclick="setCat(this)"><span class="cat-icon">🍡</span>길거리</button>
+    <button class="cat-tab" onclick="setCat(this)"><span class="cat-icon">☕</span>카페</button>
+    <button class="cat-tab" onclick="setCat(this)"><span class="cat-icon">🍺</span>포차·술</button>
+  </div>
+
+  <div class="sec">
+    <div class="sec-hd">
+      <div>
+        <div class="sec-title" id="explore-title">🌊 제주 찐 맛집</div>
+        <div class="sec-sub">현지인이 실제 가는 곳만 엄선했어요</div>
+      </div>
+    </div>
+    <div class="cards-grid" id="food-grid"></div>
+  </div>
+</div>
+
+<!-- ══════════════ GUIDE ══════════════ -->
+<div id="page-guide" class="page">
+  <div class="city-sel">
+    <div class="city-pill jeju on" id="gpill-jeju" onclick="selectCity2('jeju')">
+      <div class="city-pill-dot jeju-dot"></div> 🌊 제주도
+    </div>
+    <div class="city-pill busan" id="gpill-busan" onclick="selectCity2('busan')">
+      <div class="city-pill-dot busan-dot"></div> 🌉 부산
+    </div>
+  </div>
+  <div class="sec">
+    <div class="sec-hd">
+      <div>
+        <div class="sec-title">👋 무료 현지 가이드 & 친구 연결</div>
+        <div class="sec-sub">블록체인 인증 완료 · 무료로 연결됩니다</div>
+      </div>
+    </div>
+    <div style="display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:20px;" id="guide-grid"></div>
+  </div>
+</div>
+
+<!-- ══════════════ STAY & SHOPPING ══════════════ -->
+<div id="page-stay" class="page">
+  <div class="city-sel">
+    <div class="city-pill jeju on" id="spill-jeju" onclick="selectCity3('jeju')">
+      <div class="city-pill-dot jeju-dot"></div> 🌊 제주도
+    </div>
+    <div class="city-pill busan" id="spill-busan" onclick="selectCity3('busan')">
+      <div class="city-pill-dot busan-dot"></div> 🌉 부산
+    </div>
+  </div>
+  <div class="sec">
+    <div class="sec-hd">
+      <div><div class="sec-title">🏡 추천 숙소</div><div class="sec-sub">위치 · 가성비 · 감성 모두 잡은 곳</div></div>
+    </div>
+    <div style="display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:20px;" id="stay-grid"></div>
+  </div>
+  <div class="divider"></div>
+  <div class="sec">
+    <div class="sec-hd">
+      <div><div class="sec-title">🛍️ 찐 기념품 가이드</div><div class="sec-sub">어디서, 얼마에, 무엇을 사야 하는지</div></div>
+    </div>
+    <div style="display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:16px;" id="souvenir-grid"></div>
+  </div>
+</div>
+
+<!-- MODAL -->
+<div class="modal-ov" id="modal-ov" onclick="closeModalOv(event)">
+  <div class="modal-box">
+    <div class="modal-hd" id="modal-hd">
+      <button class="modal-close" onclick="closeModal()">✕</button>
+      <div class="modal-hd-emoji" id="modal-emoji">🍖</div>
+    </div>
+    <div class="modal-body">
+      <div class="modal-type" id="modal-type">맛집</div>
+      <div class="modal-title" id="modal-title">흑돼지 거리</div>
+      <div class="modal-loc" id="modal-loc">📍 제주 연동</div>
+      <div class="modal-rating-row">
+        <div class="modal-stat"><div class="modal-stat-n" id="m-r1">4.9 ★</div><div class="modal-stat-l">평점</div></div>
+        <div class="modal-stat"><div class="modal-stat-n" id="m-r2">₩15,000~</div><div class="modal-stat-l">1인 기준</div></div>
+        <div class="modal-stat"><div class="modal-stat-n" id="m-r3">현지인 추천</div><div class="modal-stat-l">인증</div></div>
+      </div>
+      <div class="modal-desc" id="modal-desc"></div>
+      <div class="modal-tags" id="modal-tags"></div>
+      <button class="modal-cta" id="modal-cta">가이드에게 물어보기</button>
+      <button class="modal-secondary" id="modal-sec">저장하기 ♡</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast-el"></div>
+
+<script>
+/* ── DATA ── */
+const FOOD = {
+  jeju: [
+    { id:'hd', emoji:'🥩', grad:'linear-gradient(135deg,#fff5f5,#ffe0e4)', name:'흑돼지 거리', loc:'제주 연동 · 도보 5분', rating:'4.9', price:'₩15,000~', desc:'제주 흑돼지는 껍데기째 구워먹는 게 찐. 소금에만 찍어 먹어봐야 진짜 맛을 안다. 현지인은 "도두동 흑돼지집"을 1순위로 꼽음.', tags:['#찐맛집','흑돼지','숯불구이','현지인추천'], type:'고기', color:'#FF385C' },
+    { id:'haenyeo', emoji:'🦑', grad:'linear-gradient(135deg,#e6faf8,#c8f3ee)', name:'해녀의 집', loc:'제주 성산 · 성산일출봉 근처', rating:'4.8', price:'₩12,000~', desc:'해녀 할망이 직접 잡은 성게, 전복, 뿔소라. 성게국밥 한 그릇이면 제주를 다 먹은 것. 웨이팅 필수 — 오전 11시 전에 가야 함.', tags:['#제주필수','해산물','성게국밥','해녀'], type:'해산물', color:'#00B894' },
+    { id:'manduguk', emoji:'🥟', grad:'linear-gradient(135deg,#f5f0ff,#ede0ff)', name:'성읍 할머니 만두국', loc:'제주 성읍 민속마을', rating:'4.9', price:'₩8,000', desc:'성읍 민속마을 안 70년 된 할머니 집. 관광객은 잘 모르는 제주 향토 음식. 만두피가 손으로 빚어 두껍고 쫄깃함.', tags:['#숨겨진맛집','향토음식','만두국','성읍'], type:'국수·면', color:'#a29bfe' },
+    { id:'gamgyul', emoji:'🍊', grad:'linear-gradient(135deg,#fffbe6,#fff0cc)', name:'감귤 카페 & 디저트', loc:'제주 함덕 해변가', rating:'4.7', price:'₩6,000~', desc:'제주 직접 재배 감귤로 만든 에이드, 케이크. 함덕 해변 보이는 뷰 맛집. 인스타 성지지만 줄 설 가치 충분.', tags:['#뷰맛집','감귤','카페','인스타'], type:'카페', color:'#fdcb6e' },
+    { id:'jeonbok', emoji:'🐚', grad:'linear-gradient(135deg,#e6faf8,#d0f5ef)', name:'전복 죽 골목', loc:'제주 한림읍 수산항', rating:'4.8', price:'₩15,000', desc:'수산항 바로 앞 전복죽 가게들. 관광지가 아닌 어민들이 아침에 들르는 곳. 신선도는 말할 것도 없고 양도 어마어마.', tags:['#아침밥','전복죽','수산항','진국'], type:'해산물', color:'#00A699' },
+    { id:'heukdwaeji-pojang', emoji:'🍢', grad:'linear-gradient(135deg,#fff0f2,#ffd6dc)', name:'동문시장 야시장', loc:'제주시 동문시장', rating:'4.6', price:'₩2,000~', desc:'밤 8시부터 열리는 야시장. 몸국, 오메기떡, 흑돼지 꼬치까지. K-Pop 아이돌들도 자주 다녀간 곳.', tags:['#야시장','길거리음식','동문시장','K-Pop성지'], type:'길거리', color:'#e17055' },
+  ],
+  busan: [
+    { id:'milmyun', emoji:'🍜', grad:'linear-gradient(135deg,#e6f4fd,#cce8fb)', name:'부산 밀면 원조', loc:'부산 서면 · 지하철 2분', rating:'4.9', price:'₩9,000', desc:'냉면보다 쫄깃한 밀가루 면, 부산만의 향토 음식. 원조집은 "내호냉면"과 "국제밀면" — 두 곳 다 줄이 기본. 반드시 물밀면+비빔밀면 반반으로 주문.', tags:['#부산필수','밀면','서면','향토음식'], type:'국수·면', color:'#0984E3' },
+    { id:'dwaeji', emoji:'🥣', grad:'linear-gradient(135deg,#fff5f5,#ffe0e4)', name:'돼지국밥 골목', loc:'부산 서면 밀면 골목 옆', rating:'4.9', price:'₩10,000', desc:'부산의 소울 푸드. 뼈를 하루 종일 끓인 국물에 수육이 가득. "하동관" 스타일 순대국밥과는 완전히 다른 세계. 새벽 해장으로도 최고.', tags:['#소울푸드','돼지국밥','새벽해장','현지인최애'], type:'고기', color:'#FF385C' },
+    { id:'jagalchi', emoji:'🦀', grad:'linear-gradient(135deg,#e6faf8,#c8f3ee)', name:'자갈치 시장 회', loc:'부산 자갈치역 · 도보 2분', rating:'4.8', price:'₩30,000~', desc:'한국 최대 수산시장. 직접 골라 바로 회로 뜨는 싱싱한 생선. 2층 식당에서 먹거나 조개구이 포장도 가능. 흥정은 필수.', tags:['#자갈치','회','수산시장','흥정필수'], type:'해산물', color:'#00B894' },
+    { id:'ssiat', emoji:'🥐', grad:'linear-gradient(135deg,#fffbe6,#fff0cc)', name:'씨앗호떡', loc:'부산 남포동 BIFF광장', rating:'4.7', price:'₩2,500', desc:'호떡 안에 씨앗이 가득 — 부산에서만 파는 길거리 음식. BIFF광장 앞 줄이 항상 길지만 기다릴 가치 있음. K-Pop 아이돌 브이로그 단골 아이템.', tags:['#부산명물','씨앗호떡','길거리','BIFF'], type:'길거리', color:'#fdcb6e' },
+    { id:'gamcheon-cafe', emoji:'☕', grad:'linear-gradient(135deg,#f0f4ff,#e0e8ff)', name:'감천 뷰 카페', loc:'부산 감천문화마을', rating:'4.8', price:'₩7,000~', desc:'총천연색 감천마을 내 숨어있는 뷰 카페들. 어떤 테이블에 앉아도 인생샷 보장. "달콤커피"와 "별다방 아닌 곳"이 현지인 픽.', tags:['#인생샷','감천','뷰카페','K-Drama배경'], type:'카페', color:'#6c5ce7' },
+    { id:'gwangbok', emoji:'🍺', grad:'linear-gradient(135deg,#fff0f2,#ffd6dc)', name:'광복동 포장마차', loc:'부산 광복동 · 롯데백화점 앞', rating:'4.6', price:'₩5,000~', desc:'저녁 6시부터 새벽 2시까지 열리는 노포 포장마차촌. 어묵탕, 떡볶이, 술 한잔. 부산 밤문화의 진짜 모습.', tags:['#야식','포장마차','광복동','밤문화'], type:'포차·술', color:'#e17055' },
+  ]
+};
+
+const GUIDES = {
+  jeju: [
+    { emoji:'🌊', bg:'#e6faf8', name:'제주 민지', where:'제주 토박이 · 10년 거주', rating:'★ 4.9 (리뷰 87개)', langs:['한국어','English','日本語'], free:true, bio:'제주 흑돼지 골목부터 숨겨진 오름까지, 관광책엔 없는 제주를 알려드려요. K-Pop 팬 여행 전문 🎤', specialty:'맛집·오름·K-Pop 성지' },
+    { emoji:'🍊', bg:'#fffbe6', name:'감귤 언니 수아', where:'제주시 · 현지인 가이드', rating:'★ 5.0 (리뷰 62개)', langs:['한국어','English'], free:true, bio:'함덕 해변 근처 살아요. 감귤농장 투어, 해녀 체험, 드라이브 코스 전문! 드라이브 코스만큼은 자신있어요 🚗', specialty:'드라이브·해변·카페' },
+    { emoji:'🏄', bg:'#e6f4fd', name:'서핑보이 준혁', where:'제주 협재 · 서퍼', rating:'★ 4.8 (리뷰 44개)', langs:['한국어','English'], free:true, bio:'협재 서핑 강사 겸 가이드. 에메랄드 바다에서 서핑 체험부터 숨은 해변까지. 남자 여행자 환영 💪', specialty:'서핑·해변·액티비티' },
+  ],
+  busan: [
+    { emoji:'🌉', bg:'#f0f4ff', name:'부산 아재 영호', where:'부산 서면 · 30년 거주', rating:'★ 4.9 (리뷰 103개)', langs:['한국어','English'], free:true, bio:'부산 사람만 아는 밀면집, 돼지국밥집 다 알고 있습니다. 해운대·광안리 야경도 제가 최고 포인트 알아요 🌃', specialty:'맛집·야경·로컬' },
+    { emoji:'🎨', bg:'#e6faf8', name:'감천 아티스트 나라', where:'부산 감천문화마을', rating:'★ 5.0 (리뷰 58개)', langs:['한국어','中文','English'], free:true, bio:'감천마을 거주 예술가. 마을 구석구석 숨겨진 포토스팟과 카페 다 알아요. 사진 잘 찍어드려요 📸', specialty:'감천·포토스팟·카페' },
+    { emoji:'🐟', bg:'#fffbe6', name:'자갈치 딸 혜진', where:'부산 남포동 · 수산시장 옆', rating:'★ 4.8 (리뷰 79개)', langs:['한국어','English','日本語'], free:true, bio:'자갈치 시장에서 태어나 자랐어요. 제일 싱싱한 생선 고르는 법, 흥정하는 법 가르쳐드려요 🦀', specialty:'자갈치·해산물·흥정' },
+  ]
+};
+
+const STAYS = {
+  jeju: [
+    { emoji:'🌿', bg:'linear-gradient(135deg,#e6faf8,#c8f3ee)', type:'감성 게스트하우스', name:'오름 게스트하우스', loc:'제주 애월', price:'₩35,000', per:'/박', desc:'애월 해안도로 5분 거리. 루프탑에서 제주 별 보기 최고' },
+    { emoji:'🏡', bg:'linear-gradient(135deg,#fff5f5,#ffe0e4)', type:'한옥 스테이', name:'감귤밭 한옥', loc:'제주 표선', price:'₩80,000', per:'/박', desc:'감귤농장 한복판 한옥. 아침에 감귤 직접 따먹기 가능' },
+    { emoji:'🌊', bg:'linear-gradient(135deg,#e6f4fd,#cce8fb)', type:'오션뷰 호텔', name:'함덕 씨사이드', loc:'제주 조천 함덕', price:'₩120,000', per:'/박', desc:'함덕 해변 바로 앞. 창문에서 에메랄드 바다 직관' },
+  ],
+  busan: [
+    { emoji:'🌉', bg:'linear-gradient(135deg,#f0f4ff,#e0e8ff)', type:'광안리 뷰', name:'광안리 루프탑 호스텔', loc:'부산 수영구', price:'₩45,000', per:'/박', desc:'광안대교 야경이 직접 보이는 루프탑 바 있는 호스텔' },
+    { emoji:'🎨', bg:'linear-gradient(135deg,#e6faf8,#c8f3ee)', type:'감천 부티크', name:'감천 아트 게스트하우스', loc:'부산 감천마을 내', price:'₩55,000', per:'/박', desc:'감천마을 안에서 자는 경험. 벽화 골목 바로 앞' },
+    { emoji:'🏖️', bg:'linear-gradient(135deg,#fff5f5,#ffe0e4)', type:'해운대 호텔', name:'해운대 비치 호텔', loc:'부산 해운대구', price:'₩180,000', per:'/박', desc:'해운대 해수욕장 앞 정통 호텔. 가격 대비 뷰 최상' },
+  ]
+};
+
+const SOUVENIRS = {
+  jeju: [
+    { emoji:'🍊', name:'감귤 초콜릿', where:'동문시장', price:'₩8,000~', tip:'공항보다 시장이 30% 저렴' },
+    { emoji:'🖤', name:'흑돼지 육포', where:'흑돼지 거리', price:'₩12,000', tip:'진공포장 제품으로 구매' },
+    { emoji:'🌿', name:'오설록 녹차', where:'오설록 티뮤지엄', price:'₩15,000~', tip:'현장 한정 에디션 있음' },
+    { emoji:'🐎', name:'제주 돌하르방', where:'신제주 기념품샵', price:'₩5,000~', tip:'크기별로 가격 차이 큼' },
+  ],
+  busan: [
+    { emoji:'🐟', name:'멸치·건어물', where:'자갈치시장', price:'₩10,000~', tip:'1층 새벽 경매 후 가장 신선' },
+    { emoji:'🌹', name:'부산 아트포스터', where:'감천문화마을', price:'₩5,000~', tip:'작가 직접 판매가 퀄리티 최상' },
+    { emoji:'🍬', name:'씨앗호떡 믹스', where:'남포동', price:'₩6,000', tip:'집에서 만들 수 있는 키트' },
+    { emoji:'☕', name:'모모스 커피원두', where:'전포 카페거리', price:'₩18,000', tip:'국제 바리스타 대회 수상 원두' },
+  ]
+};
+
+/* ── STATE ── */
+let curCity = 'jeju';
+let curCat = '전체';
+
+/* ── INIT ── */
+renderFood(); renderGuides(); renderStays(); renderSouvenirs();
+
+function renderFood() {
+  const data = FOOD[curCity].filter(f => curCat === '전체' || f.type === curCat);
+  document.getElementById('explore-title').textContent = (curCity === 'jeju' ? '🌊 제주' : '🌉 부산') + ' 찐 맛집';
+  document.getElementById('food-grid').innerHTML = data.map(f => `
+    <div class="card" onclick="openModal('food-${f.id}')">
+      <div class="card-img" style="background:${f.grad}">
+        ${f.emoji}
+        <span class="card-save" onclick="event.stopPropagation();toggleHeart(this)">🤍</span>
+        <div class="card-badge"><div class="badge-dot" style="background:${f.color}"></div>현지인 추천</div>
+      </div>
+      <div class="card-body">
+        <div class="card-row1"><div class="card-name">${f.name}</div><div class="card-rating">★ ${f.rating}</div></div>
+        <div class="card-loc">📍 ${f.loc}</div>
+        <div class="card-desc">${f.desc.slice(0,60)}…</div>
+        <div class="card-tags">${f.tags.map(t=>`<span class="tag">${t}</span>`).join('')}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderGuides() {
+  document.getElementById('guide-grid').innerHTML = GUIDES[curCity].map(g => `
+    <div class="guide-card" onclick="toast('💬 ${g.name}에게 연결 중…')">
+      <div class="guide-top">
+        <div class="guide-ava" style="background:${g.bg};">${g.emoji}</div>
+        <div>
+          <div class="guide-name">${g.name}</div>
+          <div class="guide-where">📍 ${g.where}</div>
+          <div class="guide-rating">${g.rating}</div>
+        </div>
+        ${g.free ? '<div class="guide-free-badge">✓ 무료 가이드</div>' : ''}
+      </div>
+      <div class="guide-langs">${g.langs.map(l=>`<span class="tag teal">${l}</span>`).join('')}</div>
+      <div class="guide-bio">${g.bio}</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:4px;">
+        <span class="tag">🗺️ ${g.specialty}</span>
+      </div>
+      <button class="guide-btn">무료로 연결하기</button>
+    </div>
+  `).join('');
+}
+
+function renderStays() {
+  document.getElementById('stay-grid').innerHTML = STAYS[curCity].map(s => `
+    <div class="stay-card" onclick="toast('🏡 ${s.name} — 예약 페이지로 이동')">
+      <div class="stay-img" style="background:${s.bg}">${s.emoji}
+        <span class="card-save" onclick="event.stopPropagation();toggleHeart(this)" style="position:absolute;top:10px;right:10px;font-size:1.2rem;filter:drop-shadow(0 1px 3px rgba(0,0,0,.25))">🤍</span>
+      </div>
+      <div class="stay-body">
+        <div class="stay-type">${s.type}</div>
+        <div class="stay-name">${s.name}</div>
+        <div class="stay-loc">📍 ${s.loc}</div>
+        <div style="font-size:0.78rem;color:var(--gray3);margin-bottom:8px;">${s.desc}</div>
+        <div class="stay-price-row"><div class="stay-price">${s.price}</div><div class="stay-per">${s.per}</div></div>
+      </div>
+    </div>
+  `).join('');
+
+  document.getElementById('souvenir-grid').innerHTML = SOUVENIRS[curCity].map(s => `
+    <div class="souvenir-card" onclick="toast('🛍️ ${s.name} — ${s.tip}')">
+      <div class="souvenir-emoji">${s.emoji}</div>
+      <div class="souvenir-name">${s.name}</div>
+      <div class="souvenir-where">📍 ${s.where}</div>
+      <div class="souvenir-price">${s.price}</div>
+      <div style="font-size:0.7rem;color:var(--gray3);margin-top:6px;">💡 ${s.tip}</div>
+    </div>
+  `).join('');
+}
+
+function renderSouvenirs() {} // called inside renderStays
+
+/* ── CITY SELECT ── */
+function selectCity(city) {
+  curCity = city;
+  ['jeju','busan'].forEach(c => {
+    const p = document.getElementById('pill-'+c);
+    if(p) { p.className = 'city-pill ' + c + (c===city?' on':''); }
+  });
+  renderFood(); showPage('explore'); setTab(document.querySelectorAll('.nav-tab')[1]);
+}
+function selectCity2(city) {
+  curCity = city;
+  ['jeju','busan'].forEach(c => {
+    const p = document.getElementById('gpill-'+c);
+    if(p) p.className = 'city-pill ' + c + (c===city?' on':'');
+  });
+  renderGuides();
+}
+function selectCity3(city) {
+  curCity = city;
+  ['jeju','busan'].forEach(c => {
+    const p = document.getElementById('spill-'+c);
+    if(p) p.className = 'city-pill ' + c + (c===city?' on':'');
+  });
+  renderStays();
+}
+
+/* ── CAT TABS ── */
+function setCat(el) {
+  document.querySelectorAll('.cat-tab').forEach(t => t.classList.remove('on'));
+  el.classList.add('on');
+  curCat = el.textContent.replace(/./u,'').trim() || '전체';
+  // map emoji label to type
+  const map = {'전체':'전체','고기':'고기','국수·면':'국수·면','해산물':'해산물','길거리':'길거리','카페':'카페','포차·술':'포차·술'};
+  const label = el.querySelector('.cat-icon').nextSibling?.textContent?.trim() || el.textContent.trim().replace(/\s+/,' ');
+  // just find matching type
+  const icons = {'🥩':'고기','🍜':'국수·면','🦞':'해산물','🍡':'길거리','☕':'카페','🍺':'포차·술','🍽️':'전체'};
+  const ic = el.querySelector('.cat-icon').textContent;
+  curCat = icons[ic] || '전체';
+  renderFood();
+}
+
+/* ── MODAL DATA ── */
+const MODAL_DATA = {
+  hallyu: { emoji:'🎬', bg:'linear-gradient(135deg,#fff0f2,#ffe0e4)', type:'K-Pop 성지 · 부산', title:'감천문화마을', loc:'📍 부산 사하구 감천동', r1:'★ 4.9', r2:'입장 무료', r3:'MV 촬영지', desc:'총천연색 계단식 골목이 인상적인 부산의 예술 마을. BTS, IU, 수많은 K-Drama 배경. 주말은 인파가 많으니 평일 이른 아침 추천. 골목 안 작은 카페에서 커피 한잔이 진짜 감성.', tags:['BTS 촬영지','IU 배경','인생샷','무료입장','K-Drama'], cta:'가이드에게 방문 팁 받기' },
+  'jeju-mv': { emoji:'🌿', bg:'linear-gradient(135deg,#e6faf8,#c8f3ee)', type:'K-Pop 성지 · 제주', title:'성산일출봉', loc:'📍 제주 서귀포시 성산읍', r1:'★ 4.8', r2:'₩2,000', r3:'MV 촬영지', desc:'제주의 상징, 유네스코 세계자연유산. BLACKPINK, aespa MV 배경. 일출 시간에 맞춰 오르면 인생 장면 보장. 인근 오조리 해녀 마을과 함께 묶어서 방문 추천.', tags:['BLACKPINK','aespa','일출','세계자연유산','제주필수'], cta:'가이드에게 경로 물어보기' },
+  'haeundae-kpop': { emoji:'🌊', bg:'linear-gradient(135deg,#e6f4fd,#cce8fb)', type:'K-Pop 성지 · 부산', title:'해운대 해수욕장', loc:'📍 부산 해운대구', r1:'★ 4.7', r2:'입장 무료', r3:'MV·드라마 촬영', desc:'NewJeans, TWICE 여름 MV 배경. 밤 광안대교 야경과 함께 보면 배경화면 각. 달맞이 고개 야경 카페와 세트 코스 추천. 여름 성수기는 사람이 너무 많으니 5월~6월이 최적.', tags:['NewJeans','TWICE','야경','해변','여름MV'], cta:'야경 포인트 가이드받기' },
+  udo: { emoji:'🏝️', bg:'linear-gradient(135deg,#fffbe6,#fff3c4)', type:'K-Pop 성지 · 제주 우도', title:'우도 땅콩 아이스크림', loc:'📍 제주 우도 천진항', r1:'★ 4.9', r2:'₩3,000', r3:'아이돌 브이로그 단골', desc:'LE SSERAFIM 브이로그에 등장한 그 아이스크림. 에메랄드 바다 앞에서 먹어야 진짜. 성산항에서 배로 15분. 우도 자전거 대여(₩15,000)로 섬 한 바퀴 도는 게 정석 코스.', tags:['LE SSERAFIM','우도','땅콩아이스크림','에메랄드바다','자전거'], cta:'우도 당일치기 코스 받기' },
+};
+// food modal
+FOOD.jeju.concat(FOOD.busan).forEach(f => {
+  MODAL_DATA['food-'+f.id] = { emoji:f.emoji, bg:f.grad, type:'찐 맛집', title:f.name, loc:'📍 '+f.loc, r1:'★ '+f.rating, r2:f.price, r3:'현지인 추천', desc:f.desc, tags:f.tags, cta:'가이드에게 예약 도움 받기' };
+});
+
+function openModal(id) {
+  const d = MODAL_DATA[id]; if(!d) return;
+  document.getElementById('modal-hd').style.background = d.bg;
+  document.getElementById('modal-emoji').textContent = d.emoji;
+  document.getElementById('modal-type').textContent = d.type;
+  document.getElementById('modal-title').textContent = d.title;
+  document.getElementById('modal-loc').textContent = d.loc;
+  document.getElementById('m-r1').textContent = d.r1;
+  document.getElementById('m-r2').textContent = d.r2;
+  document.getElementById('m-r3').textContent = d.r3;
+  document.getElementById('modal-desc').textContent = d.desc;
+  document.getElementById('modal-tags').innerHTML = d.tags.map(t=>`<span class="tag red">${t}</span>`).join('');
+  document.getElementById('modal-cta').textContent = d.cta;
+  document.getElementById('modal-cta').onclick = () => { closeModal(); toast('💬 현지 가이드에게 연결 중…'); };
+  document.getElementById('modal-sec').onclick = () => toast('💖 저장되었습니다!');
+  document.getElementById('modal-ov').classList.add('open');
+}
+function closeModal() { document.getElementById('modal-ov').classList.remove('open'); }
+function closeModalOv(e) { if(e.target===document.getElementById('modal-ov')) closeModal(); }
+
+/* ── HEART ── */
+function toggleHeart(el) {
+  el.textContent = el.textContent === '🤍' ? '❤️' : '🤍';
+  if(el.textContent==='❤️') toast('💖 저장되었습니다');
+}
+
+/* ── NAV ── */
+function showPage(name) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-'+name).classList.add('active');
+  window.scrollTo(0,0);
+}
+function setTab(el) {
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('on'));
+  el.classList.add('on');
+}
+
+/* ── TOAST ── */
+let _tt;
+function toast(msg) {
+  const t = document.getElementById('toast-el');
+  t.textContent = msg; t.classList.add('show');
+  clearTimeout(_tt); _tt = setTimeout(() => t.classList.remove('show'), 2800);
+}
+</script>
+</body>
+</html>
